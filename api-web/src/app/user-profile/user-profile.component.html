@@ -1,0 +1,315 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="title">Trainings</h5>
+            </div>
+            <div class="card-body">
+              <table class="table w-100 table-responsive">
+                <thead>
+    
+                  <th style="text-align: center;">
+                    Topic
+                  </th>
+                  <th style="text-align: center;">
+                    Date
+                  </th>
+                  <th style="text-align: center;">
+                    Hrs
+                  </th>
+                  <th style="text-align: center;">
+                    Agency
+                  </th>
+                  <th style="text-align: center;">
+                    Address
+                  </th>
+                  <th style="text-align: center;">
+                    Certificate No.
+                  </th>
+                  <th style="text-align: center;">
+                    Training Type
+                  </th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of certificates">
+                    <td>{{item.topic}}</td>
+                    <td>{{item.trainingDate | date}}</td>
+                    <td>{{item.noOfHours}}</td>
+                    <td>{{item.nameOfOrganization}}</td>
+                    <td>{{item.organizationAddress}}</td>
+                    <td>
+                      <a href="http://localhost:9009/certificates/{{item.certificatePath}}" target="_blank">
+                        {{item.certificateNo}}
+                      </a>
+                    </td>
+                    <td>{{item.trainingType}}</td>
+                  </tr>
+    
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="d-flex justify-content-between bg-success rounded p-2">
+            <p class="text-white my-2">Apply Leave: </p>
+            <i style="cursor: pointer;" class="now-ui-icons ui-1_simple-add text-white my-2"
+              (click)="openLeaveApplicationModel(createLeaveApp)"></i>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="title">Application Request</h5>
+            </div>
+            <div class="card-body">
+              <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Application Date</th>
+                        <th>Status</th>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of leaveRequestList
+                  | paginate: { itemsPerPage: itemPerPage, currentPage: p, totalItems: pages }; index as i">
+                    <td>{{i+1}}</td>
+                    <td>{{item.letterSubject}}</td>
+                    <td><span (click)="openViewLeaveApplicationModel(viewLeaveApp, item)" style="cursor: pointer;font-style: italic;">
+                      {{(item.letterBody | slice:0:20) + '...'}}</span></td>
+                    <td>{{item.applicationDate | date}}</td>
+                    <td>{{item.status}}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5">
+                      <pagination-controls directionLinks="true" responsive="true" previousLabel="" nextLabel=""
+                        (pageChange)="pageChangeEvent($event)"></pagination-controls>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="title">Current Session Time Table</h5>
+            </div>
+            <div class="card-body">
+              <table class="table">
+                <thead style="color: #7e6eeb;">
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        Day
+                    </th>
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        1
+                    </th>
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        2
+                    </th>
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        3
+                    </th>
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        4
+                    </th>
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        5
+                    </th>
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        6
+                    </th>
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        7
+                    </th>
+                    <th style="text-align: center;border: 1px solid #7e6eeb;">
+                        8
+                    </th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of timeTableReport.timeTableObject">
+                        <td *ngFor="let stats of item" style="border: 1px solid #7e6eeb;text-align: center;padding: 0px;margin: 0px;">
+                            <span class="linebreak">{{stats?stats.replace(' ','\n'):'\t\t\t'}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-user">
+        <div class="image">
+          <img src="../assets/img/bg5.jpg" alt="...">
+        </div>
+        <div class="card-body">
+          <div class="author">
+            <a href="#">
+              <img class="avatar border-gray" *ngIf="teacherData.teacherPhoto"
+                src="http://localhost:9009/images/{{teacherData.teacherPhoto}}" alt="{{teacherData.teacherPhoto}}">
+              <h5 class="title">{{teacherData.teacherName}}</h5>
+            </a>
+            <table class="abc">
+              <tr>
+                <th>Father's Name</th>
+                <td>{{teacherData.fatherName}}</td>
+              </tr>
+              <tr>
+                <th>Date of Joining</th>
+                <td>{{teacherData.dateOfJoining | date}}</td>
+              </tr>
+              <tr>
+                <th>Subject</th>
+                <td>{{teacherData.subjectAppointed}}</td>
+              </tr>
+              <tr *ngIf="teacherData.classId != null && teacherData.sectionId != null">
+                <th>Class Incharge</th>
+                <td>{{teacherData.classId}} {{teacherData.sectionId}}</td>
+              </tr>
+              <tr>
+                <th>Post</th>
+                <td>{{teacherData.post}}</td>
+              </tr>
+              <tr>
+                <th>Nature of Appointment</th>
+                <td>{{teacherData.nappointment}}</td>
+              </tr>
+              <tr>
+                <th>Phone No</th>
+                <td>{{teacherData.phoneNo}}</td>
+              </tr>
+              <tr>
+                <th>Address</th>
+                <td>{{teacherData.taddress}}</td>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- add model starts  -->
+<ng-template #createLeaveApp let-modal>
+
+
+  <div class="modal-content">
+      <div class="card-header">
+          <div class="row">
+              <div class="col-md-6 pr-1" style="text-align: left;">
+                  <h5 class="title" style="font-weight: bold;">Leave Application</h5>
+              </div>
+          </div>
+      </div>
+      <div class="card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <form role="form" [formGroup]="createApplicationRequest">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label for="inputState">Subject</label>
+                        <div class="input-group input-group-alternative">
+                            <input class="form-control myformcontrol" placeholder="Subject" type="text"
+                                id="appsubject" name="appsubject" formControlName="appsubject" />
+                        </div>
+  
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-12">
+                    <label for="inputState">Message</label>
+                    <div class="input-group input-group-alternative">
+                        <textarea class="form-control myformcontrol" placeholder="Message" rows="7"
+                            id="appmessage" name="appmessage" formControlName="appmessage"></textarea>
+                    </div>
+  
+                </div>
+              </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary btn-round" (click)="submitApplication()">Submit</button>
+                        <button type="reset" class="btn btn-warning btn-round">Reset</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+          </div>
+      </div>
+  </div>
+
+</ng-template>
+<!-- add model end -->
+<!-- view leave request model starts  -->
+<ng-template #viewLeaveApp let-modal>
+
+
+  <div class="modal-content">
+      <div class="card-header">
+          <div class="row">
+              <div class="col-md-6 pr-1" style="text-align: left;">
+                  <h5 class="title" style="font-weight: bold;">Leave Application</h5>
+              </div>
+          </div>
+      </div>
+      <div class="card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <form role="form" [formGroup]="viewApplicationRequest">
+                <div class="row">
+                    <div class="form-group col-md-8">
+                        <label for="inputState">Subject</label>
+                        <div class="input-group input-group-alternative">
+                            <input class="form-control myformcontrol" placeholder="Subject" type="text"
+                                id="appsubject" name="appsubject" formControlName="appsubject" />
+                        </div>
+  
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label for="inputState">Leave ID</label>
+                      <div class="input-group input-group-alternative">
+                          <input class="form-control myformcontrol" placeholder="Leave ID" type="text"
+                              id="leaveid" name="leaveid" formControlName="leaveid" />
+                      </div>
+
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-12">
+                    <label for="inputState">Message</label>
+                    <div class="input-group input-group-alternative">
+                        <textarea class="form-control" placeholder="Message" rows="10" style="height: 100px;"
+                            id="appmessage" name="appmessage" formControlName="appmessage"></textarea>
+                    </div>
+                </div>
+              </div>
+            </form>
+            </div>
+          </div>
+      </div>
+  </div>
+
+</ng-template>
+<!-- view leave request model end -->

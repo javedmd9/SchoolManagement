@@ -1,0 +1,17 @@
+.table-responsive {
+    display: table;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+::ng-deep .colored-toast .swal2-title {
+    color: white !important;
+}
+
+::ng-deep .colored-toast.swal2-icon-info {
+    background-color: #3fc3ee !important;
+}
+
+::ng-deep .colored-toast.swal2-icon-success {
+    background-color: #a5dc86 !important;
+}

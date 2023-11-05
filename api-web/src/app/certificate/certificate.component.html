@@ -1,0 +1,466 @@
+<div class="panel-header panel-header-md">
+    <div class="mr-3 col-md-10">
+        <div class="card-user">
+
+            <div class="row">
+                <div class="col-sm-6 pr-1">
+                    <div class="form-group">
+                        <label class="text-white">Filter</label>
+                        <input type="text" class="form-control" placeholder="Type to search" [(ngModel)]="data">
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 form-group ">
+
+                    <button type="button" class="btn btn-primary btn-round"
+                        (click)="openFilterModel(filterModal)">Custom Filter</button>
+                    <!-- (click)="viewAllFaculty(); criteriaForm.resetForm()">Reset</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- filter model starts  -->
+<ng-template #filterModal let-modal>
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Filter Certificate</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-body gradientModelBackground" >
+            <form role="form" [formGroup]="filterCertificateForm">
+                <div class="row">
+                    <div class="col-sm-3 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Training Type</label>
+                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example"
+                                id="tfiltertype" name="tfiltertype" formControlName="tfiltertype">
+                                <option value="">Select</option>
+                                <option value="Cbse">Cbse</option>
+                                <option value="In House">In House</option>
+                                <!-- <option *ngFor="let item of teachers" value="{{item.id}}">{{item.name}}</option> -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Start Date</label>
+                            <input class="form-control myformcontrol text-danger" placeholder="Start Date" type="date"
+                                id="fstartdate" name="fstartdate" formControlName="fstartdate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-3 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">End Date</label>
+                            <input class="form-control myformcontrol text-danger" placeholder="End Date" type="date"
+                                id="fenddate" name="fenddate" formControlName="fenddate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-3 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Training Agency</label>
+                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example"
+                                id="tfilteragency" name="tfilteragency" formControlName="tfilteragency">
+                                <option value="">Select</option>
+                                <option value="Diksha">Diksha</option>
+                                <option value="COE">COE</option>
+                                <option value="Sahodaya">Sahodaya</option>
+                                <!-- <option *ngFor="let item of teachers" value="{{item.id}}">{{item.name}}</option> -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-3 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Teacher Name</label>
+                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example"
+                                id="fteachername" name="fteachername" formControlName="fteachername">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of teachers" value="{{item.id}}">{{item.teacherName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Training Topic</label>
+                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example"
+                                id="ftraining" name="ftraining" formControlName="ftraining">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of topicList" value="{{item}}">{{item}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group text-center">
+                        <button type="button" class="btn btn-primary btn-round" (click)="submitFilter()">Save</button>
+                        &nbsp;<button type="button" class="btn btn-warning btn-round"
+                            (click)="initializeFilterModel()">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</ng-template>
+<!-- filter model end -->
+<!-- add model starts  -->
+<ng-template #createModal let-modal>
+
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Add New Certificate</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-body">
+            <form role="form" [formGroup]="createCertificateForm">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Certificate Number</label>
+                        <div class="input-group input-group-alternative">
+                            <input class="form-control myformcontrol" placeholder="Certificate No." type="text"
+                                id="certificatenumber" name="certificatenumber" formControlName="certificatenumber" />
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Topic</label>
+                        <input class="form-control myformcontrol" placeholder="Topic" type="text" id="topic"
+                            name="topic" formControlName="topic" />
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Training Date</label>
+                        <input class="form-control myformcontrol" placeholder="Training Date" type="date"
+                            id="trainingdate" name="trainingdate" formControlName="trainingdate" />
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Training Type</label>
+                        <div class="input-group input-group-alternative">
+                            <select class="form-control  myformcontrol" aria-label="Default select example"
+                                id="trainingtype" name="trainingtype" formControlName="trainingtype">
+                                <option value="">Select</option>
+                                <option value="In House">In House</option>
+                                <option value="Cbse">Cbse</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Organization Name</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example"
+                            id="organization" name="organization" formControlName="organization">
+                            <option value="">Select</option>
+                            <option value="Diksha">Diksha</option>
+                            <option value="COE">COE</option>
+                            <option value="Sahodaya">Sahodaya</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Address</label>
+                        <input class="form-control myformcontrol" placeholder="Address" type="text"
+                            id="organizationaddress" name="organizationaddress" formControlName="organizationaddress" />
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">No of Hours</label>
+                        <input class="form-control myformcontrol" placeholder="No. of Hours" type="text"
+                            id="traingduration" name="traingduration" formControlName="traingduration" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Name</label>
+                        <select class="form-control  myformcontrol" name="teacherid" id="teacherid"
+                            formControlName="teacherid">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of teachers" value="{{item.id}}">{{item.teacherName}}</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Upload Certificate</label>
+                        <input type="file" value="Choose File..." class="form-control  myformcontrol"
+                            style="opacity:0.5; color: red; margin-top: 35px; margin-left: 20px;" id="teacherPhoto"
+                            class="form-control-file" name="teacherCert" formControlName="teacherCert"
+                            accept="application/pdf, image/jpeg" (change)="onFileSelected($event)">
+                        <!-- <angular-file-uploader (fileSelected)="fileSelected($event)" [config]="afuConfig">
+                        </angular-file-uploader> -->
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-12">
+                    <div class="form-group text-center">
+                        <button type="button" class="btn btn-primary btn-round" (click)="onSubmit()">Save</button>
+                        &nbsp;<button type="button" class="btn btn-warning btn-round"
+                            (click)="setDefaulltValue()">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</ng-template>
+<!-- add model end -->
+
+<!-- update model starts  -->
+<ng-template #updateModal let-modal>
+
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Update Certificate</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-body">
+            <form role="form" [formGroup]="updateCertificateForm">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Certificate Number</label>
+                        <!-- <div class="input-group input-group-alternative">
+                            
+                        </div> -->
+                        <input class="form-control myformcontrol" placeholder="Certificate No." type="text"
+                            id="ucertificateno" name="ucertificateno" formControlName="ucertificateno" />
+                        <input class="form-control myformcontrol" placeholder="Id" type="text" id="uid" name="uid"
+                            formControlName="uid" hidden />
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Topic</label>
+                        <input class="form-control myformcontrol" placeholder="Topic" type="text" id="utopic"
+                            name="utopic" formControlName="utopic" />
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Training Date</label>
+                        <input class="form-control myformcontrol" placeholder="Training Date" type="date"
+                            id="utrainingdate" name="utrainingdate" formControlName="utrainingdate" />
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Training Type</label>
+                        <div class="input-group input-group-alternative">
+                            <select class="form-control  myformcontrol" aria-label="Default select example"
+                                id="utrainingtype" name="utrainingtype" formControlName="utrainingtype">
+                                <option value="">Select</option>
+                                <option value="In House">In House</option>
+                                <option value="Cbse">Cbse</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Organization Name</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example"
+                            id="uorganization" name="uorganization" formControlName="uorganization">
+                            <option value="">Select</option>
+                            <option value="Diksha">Diksha</option>
+                            <option value="COE">COE</option>
+                            <option value="Sahodaya">Sahodaya</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Address</label>
+                        <input class="form-control myformcontrol" placeholder="Address" type="text"
+                            id="uorganizationaddress" name="uorganizationaddress"
+                            formControlName="uorganizationaddress" />
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">No of Hours</label>
+                        <input class="form-control myformcontrol" placeholder="No. of Hours" type="text"
+                            id="utraingduration" name="utraingduration" formControlName="utraingduration" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Name</label>
+                        <select class="form-control  myformcontrol" name="uteacherid" id="uteacherid"
+                            formControlName="uteacherid">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of teachers" value="{{item.id}}">{{item.teacherName}}</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Certificate</label>
+                        <a class="form-control" href="http://localhost:9009/certificates/{{cFile}}" target="_blank"
+                            rel="noopener noreferrer">Download</a>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="col-md-12">
+                    <div class="form-group text-center">
+                        <button type="button" class="btn btn-primary btn-round" (click)="onUpdate()">Save</button>
+                        &nbsp;<button type="button" class="btn btn-warning btn-round"
+                            (click)="dismissModel()">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</ng-template>
+<!-- update model end -->
+
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title"> Manage Certificates</h4>
+                        </div>
+                        <div class="col-md-6">
+
+                            <button type="button" class="btn btn-primary btn-round mr-2 float-right"
+                                (click)="open(createModal)">Create Certificate</button>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- faculty View  -->
+                <div class="card-body">
+                    <table class="table table-responsive">
+                        <thead>
+                            <th style="text-align: center;">
+                                Name
+                            </th>
+                            <th style="text-align: center;">
+                                Topic
+                            </th>
+                            <th style="text-align: center;">
+                                Date
+                            </th>
+                            <th style="text-align: center;">
+                                Duration
+                            </th>
+                            <th style="text-align: center;">
+                                Agency
+                            </th>
+                            <th style="text-align: center;">
+                                Address
+                            </th>
+                            <th style="text-align: center;">
+                                Certificate No.
+                            </th>
+                            <th style="text-align: center;">
+                                Training Type
+                            </th>
+                            <th style="text-align: center;">Action</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let cert of certificates | filter: data">
+                                <td *ngIf="certificates.length==0 || certificates.length<0">No Results found</td>
+                                <td style="text-align: center; width: 20%;">
+                                    <a role="button" style="color: #7e6eeb;" (click)="viewTeacher(cert.teacher.teacherCode)">
+                                        {{cert.teacher.teacherName}}
+                                    </a>
+                                </td>
+                                <td style="text-align: center;">
+                                    {{cert.topic}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{cert.trainingDate | date}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{cert.noOfHours}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{cert.nameOfOrganization}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{cert.organizationAddress}}
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="http://localhost:9009/certificates/{{cert.certificatePath}}"
+                                        target="_blank">
+                                        {{cert.certificateNo}}
+                                    </a>
+                                </td>
+                                <td style="text-align: center;">
+                                    {{cert.trainingType}}
+                                </td>
+                                <td class="td-actions" style="text-align: center;">
+                                    <button type="button" rel="tooltip" title=""
+                                        class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Edit Task" (click)="onEdit(updateModal, cert)">
+                                        <i class="now-ui-icons ui-2_settings-90"></i>
+                                    </button>&nbsp;
+                                    <button type="button" rel="tooltip" title=""
+                                        class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Remove" (click)="deleteCertificate(cert)">
+                                        <i class="now-ui-icons files_box text-info"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="button" class="btn btn-success" (click)="results()">Export
+                                        CSV</button>
+                                </td>
+                                <td colspan="7">
+                                    <ul class="nav nav-pills float-right">
+                                        <li class="nav-item rounded-circle ml-1"
+                                            *ngFor="let item of pages; let i = index">
+                                            <a href="#" class="nav-link border border-primary rounded-circle active"
+                                                (click)="setPage(i,$event)"
+                                                [ngClass]="{'active': i==requestPage}">{{i+1}} </a>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+.table-responsive{
+    overflow-x: auto;
+    overflow-y: auto;
+}
+.linebreak{
+    white-space: pre;
+}
+
+.abc{
+    overflow-x: auto;
+    display: block;
+}
+
+*::-webkit-scrollbar {
+    width: 12px;
+}
+
+.abc th {
+    color: #7e6eeb;
+}
+.abc th, td{
+    border: 1px solid #7e6eeb;
+    padding: 5px;
+    text-align: center;
+    width: 20%;
+}
+::ng-deep .abc {
+    padding-top: 20px;
+}

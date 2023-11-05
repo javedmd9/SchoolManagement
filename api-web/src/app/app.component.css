@@ -1,0 +1,7 @@
+::ng-deep .colored-toast.swal2-icon-success {
+    background-color: #a5dc86 !important;
+}
+
+::ng-deep .colored-toast .swal2-title {
+    color: white !important;
+}

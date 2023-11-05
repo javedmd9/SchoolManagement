@@ -1,0 +1,588 @@
+<div class="panel-header panel-header-md">
+    <div class="ml-3 col-md-10">
+        <div class="card-user">
+            <form [formGroup]="criteriaForm">
+                <div class="row">
+                    <div class="col-md-4 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Teacher Name</label>
+                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example"
+                                id="tfiltername" name="tfiltername" formControlName="tfiltername">
+                                <option value="">Select</option>
+                                <!-- <option *ngFor="let item of teachers" value="{{item.id}}">{{item.name}}</option> -->
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <button type="button" class="btn btn-primary btn-round mr-2"
+                            (click)="getFilteredTeachers()">Search</button>
+                        <button type="button" class="btn btn-warning btn-round"
+                            (click)="viewAllTeachers()">Reset</button>
+                        <!-- (click)="viewAllFaculty(); criteriaForm.resetForm()">Reset</button> -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- add model starts  -->
+<ng-template #createModal let-modal>
+
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Add New Teacher</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-body">
+            <form role="form" [formGroup]="createTeacherForm">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <div class="card">
+                            <input hidden type="file" value="Choose File..." class="form-control  myformcontrol" #uploadImage
+                                    style="opacity:0.5; color: red; margin-top: 35px; margin-left: 20px;" id="teacherPhoto" accept="image/jpeg"
+                                    class="form-control-file" name="teacherPhoto" formControlName="teacherPhoto" (change)="onFileSelected($event)">
+                            <div class="card-body" style="height: 12rem;">
+                                <img class="card-img-top profileImage" src="{{uploadImageURL}}" alt=""> 
+                            </div>
+                            <div class="card-footer">
+                                <div class="form-group text-center">
+                                    <button type="button" class="btn btn-primary btn-round" (click)="onSubmit()">Capture</button>
+                                    &nbsp;<button type="button" class="btn btn-warning btn-round"
+                                        (click)="uploadImage.click()">Upload</button>
+                                </div>
+                            </div>
+                        </div>
+                        <label for="inputState">Teacher Photo</label>
+                        
+                        <!-- <angular-file-uploader (fileSelected)="fileSelected($event)" [config]="afuConfig">
+                        </angular-file-uploader> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Code</label>
+                        <div class="input-group input-group-alternative">
+                            <input class="form-control myformcontrol" placeholder="" type="number" id="teachercode"
+                                name="teachercode" formControlName="teachercode" [value]="generateTeacherCode" />
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Name</label>
+                        <input class="form-control myformcontrol" placeholder="Teacher Name" type="text"
+                            id="teachername" name="teachername" formControlName="teachername" />
+                        <div class="text-danger"
+                            *ngIf="teachername && teachername.invalid && (teachername.dirty || teachername.touched)">
+                            Teacher Name is required</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Father Name</label>
+                        <input class="form-control myformcontrol" placeholder="Father Name" type="text" id="fathername"
+                            name="fathername" formControlName="fathername" />
+                        <div class="text-danger"
+                            *ngIf="fathername && fathername.invalid && (fathername.dirty || fathername.touched)">
+                            Father Name is required</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Appointed For Post</label>
+                        <div class="input-group input-group-alternative">
+                            <select class="form-control  myformcontrol" aria-label="Default select example"
+                                id="subjectappointed" name="subjectappointed" formControlName="subjectappointed">
+                                <option value="">Select</option>
+                                <option value="English">English</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="Maths">Maths</option>
+                                <option value="Science">Science</option>
+                                <option value="SST">SST</option>
+                                <option value="P.T">P.T</option>
+                                <option value="Computer">Computer</option>
+                                <option value="Clerk">Clerk</option>
+                            </select>
+                        </div>
+                        <div class="text-danger"
+                            *ngIf="subjectappointed && subjectappointed.invalid && (subjectappointed.dirty || subjectappointed.touched)">
+                            Please select the Subject</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Address</label>
+                        <input class="form-control myformcontrol" placeholder="Address" type="text"
+                            id="taddress" name="taddress" formControlName="taddress" />
+                        <div class="text-danger"
+                            *ngIf="taddress && taddress.invalid && (taddress.dirty || taddress.touched)">
+                            Address is required</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Date of Birth</label>
+                        <input class="form-control myformcontrol" placeholder="Date of Birth" type="date" id="dob"
+                            name="dob" formControlName="dob" />
+                        <div class="text-danger" *ngIf="dob && dob.invalid && (dob.dirty || dob.touched)">
+                            Date of Birth is required</div>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Post</label>
+                        <div class="input-group input-group-alternative">
+                            <select class="form-control  myformcontrol" aria-label="Default select example" id="post"
+                                name="post" formControlName="post">
+                                <option value="TGT">TGT</option>
+                                <option value="PET">PET</option>
+                                <option value="PRT">PRT</option>
+                                <option value="NTT">NTT</option>
+                            </select>
+                        </div>
+                        <div class="text-danger" *ngIf="post && post.invalid && (post.dirty || post.touched)">
+                            Please select the post</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Nature of Appointment</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example"
+                            id="nappointment" name="nappointment" formControlName="nappointment">
+                            <option value="Permanent">Permanent</option>
+                            <option value="Probation">Probation</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Part Time">Part Time</option>
+                        </select>
+
+                        <div class="text-danger"
+                            *ngIf="nappointment && nappointment.invalid && (nappointment.dirty || nappointment.touched)">
+                            Please select Nature of Appointment</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Date of Joining</label>
+                        <input class="form-control myformcontrol" placeholder="Date of Joining" type="date" id="joining"
+                            name="joining" formControlName="joining" />
+                        <div class="text-danger"
+                            *ngIf="joining && joining.invalid && (joining.dirty || joining.touched)">
+                            Date of joining is needed</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Status</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="status"
+                            name="status" formControlName="status">
+                            <option value="Active">Active</option>
+                            <option value="In Active">In Active</option>
+                        </select>
+
+                        <div class="text-danger" *ngIf="status && status.invalid && (status.dirty || status.touched)">
+                            Please select Yes or No from the options</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Phone Number</label><br>
+                        <input class="form-control myformcontrol" type="text" name="phoneNo" id="phoneNo" formControlName="phoneNo">
+                        <div class="text-danger" *ngIf="phoneNo && phoneNo.invalid && (phoneNo.dirty || phoneNo.touched)">
+                            Phone number is required</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Email</label><br>
+                        <input class="form-control myformcontrol" type="text" name="email" id="email" formControlName="email">
+                        <div class="text-danger" *ngIf="email && email.invalid && (email.dirty || email.touched)">
+                            Email is required</div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Role</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example"
+                            id="staffrole" name="staffrole" formControlName="staffrole">
+                            <option value="">Select</option>
+                            <option [value]="item.id" *ngFor="let item of staffRoles">{{item.name}}</option>
+                        </select>
+
+                        <div class="text-danger"
+                            *ngIf="staffrole && staffrole.invalid && (staffrole.dirty || staffrole.touched)">
+                            Please select a role</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Class Incharge</label><br>
+                        <input class="mt-3" type="radio" name="classStatus" id="classStatusYes" value="Yes" (click)="checkClassIncharge($event)">
+                        <label for="inputState">Yes</label>&nbsp;
+                        <input checked type="radio" name="classStatus" id="classStatusNo" value="No" (click)="checkClassIncharge($event)">
+                        <label for="inputState">No</label>
+
+                    </div>
+                    
+                    <div class="form-group col-md-4" *ngIf="isClassIncharge">
+                        <label for="inputState">Class</label><br>
+                        <input class="form-control myformcontrol" type="text" name="classId" id="classId" formControlName="classId">
+
+                    </div>
+                    <div class="form-group col-md-4" *ngIf="isClassIncharge">
+                        <label for="inputState">Section</label><br>
+                        <input class="form-control myformcontrol" type="text" name="sectionId" id="sectionId" formControlName="sectionId">
+
+                    </div>
+                    
+                </div>
+
+
+
+                <div class="col-md-12">
+                    <div class="form-group text-center">
+                        <button type="button" class="btn btn-primary btn-round" (click)="onSubmit()">Save</button>
+                        &nbsp;<button type="button" class="btn btn-warning btn-round"
+                            (click)="setDefaultValues()">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</ng-template>
+<!-- add model end -->
+
+<ng-template #uploadImageModal let-modal>
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Upload Teacher Photo</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-body">
+            <form role="form" [formGroup]="uploadTeacherPhotoForm">
+                
+                <div class="row">
+                    
+                    <div class="form-group col-md-4">
+                        <!-- <label for="inputState">Teacher Photo</label> -->
+                        <input type="text" id="eteacherId" name="eteacherId" formControlName="eteacherId">
+                        <input type="file" value="Choose File..." class="form-control  myformcontrol" 
+                        style="opacity:0.5; color: red; margin-top: 35px; margin-left: 20px;" id="eteacherPhoto" class="form-control-file" 
+                        name="eteacherPhoto" formControlName="eteacherPhoto"
+                        (change) = "onFileSelected($event)">
+                        
+                        <!-- <angular-file-uploader (fileSelected)="fileSelected($event)" [config]="afuConfig">
+                        </angular-file-uploader> -->
+                    </div>
+
+                </div>
+
+
+
+                <div class="col-md-12">
+                    <div class="form-group text-center">
+                        <button type="button" class="btn btn-primary btn-round" (click)="uploadFile()">Save</button>
+                        &nbsp;<button type="button" class="btn btn-warning btn-round"
+                            (click)="setDefaultValues()">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>
+
+<!-- update model starts  -->
+<ng-template #updateModal let-modal>
+
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Update Teacher</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-body">
+            <form role="form" [formGroup]="updateTeacherForm">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Code</label>
+                        <div class="input-group input-group-alternative">
+                            <input class="form-control myformcontrol" placeholder="" type="number" id="utid"
+                                name="utid" formControlName="utid" />
+                            <input class="form-control myformcontrol" placeholder="" type="number" id="uteachercode"
+                                name="uteachercode" formControlName="uteachercode" />
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Name</label>
+                        <input class="form-control myformcontrol" placeholder="Teacher Name" type="text"
+                            id="uteachername" name="uteachername" formControlName="uteachername" />
+                        <div class="text-danger"
+                            *ngIf="uteachername && uteachername.invalid && (uteachername.dirty || uteachername.touched)">
+                            Teacher Name is required</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Father Name</label>
+                        <input class="form-control myformcontrol" placeholder="Father Name" type="text" id="ufathername"
+                            name="ufathername" formControlName="ufathername" />
+                        <div class="text-danger"
+                            *ngIf="ufathername && ufathername.invalid && (ufathername.dirty || ufathername.touched)">
+                            Father Name is required</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Appointed For Post</label>
+                        <div class="input-group input-group-alternative">
+                            <select class="form-control  myformcontrol" aria-label="Default select example"
+                                id="usubjectappointed" name="usubjectappointed" formControlName="usubjectappointed">
+                                <option value="">Select</option>
+                                <option value="English">English</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="Maths">Maths</option>
+                                <option value="Science">Science</option>
+                                <option value="SST">SST</option>
+                                <option value="Computer">Computer</option>
+                                <option value="Clerk">Clerk</option>
+                            </select>
+                        </div>
+                        <div class="text-danger"
+                            *ngIf="usubjectappointed && usubjectappointed.invalid && (usubjectappointed.dirty || usubjectappointed.touched)">
+                            Please select the Subject</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Address</label>
+                        <input class="form-control myformcontrol" placeholder="Address" type="text"
+                            id="utaddress" name="utaddress" formControlName="utaddress" />
+                        <div class="text-danger"
+                            *ngIf="utaddress && utaddress.invalid && (utaddress.dirty || utaddress.touched)">
+                            Address is required</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Date of Birth</label>
+                        <input class="form-control myformcontrol" placeholder="Date of Birth" type="date" id="udob"
+                            name="udob" formControlName="udob" />
+                        <div class="text-danger" *ngIf="udob && udob.invalid && (udob.dirty || udob.touched)">
+                            Date of Birth is required</div>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Post</label>
+                        <div class="input-group input-group-alternative">
+                            <select class="form-control  myformcontrol" aria-label="Default select example" id="upost"
+                                name="upost" formControlName="upost">
+                                <option value="TGT">TGT</option>
+                                <option value="PET">PET</option>
+                                <option value="PRT">PRT</option>
+                                <option value="NTT">NTT</option>
+                            </select>
+                        </div>
+                        <div class="text-danger" *ngIf="upost && upost.invalid && (upost.dirty || upost.touched)">
+                            Please select the post</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Nature of Appointment</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example"
+                            id="unappointment" name="unappointment" formControlName="unappointment">
+                            <option value="Permanent">Permanent</option>
+                            <option value="Probation">Probation</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Part Time">Part Time</option>
+                        </select>
+
+                        <div class="text-danger"
+                            *ngIf="unappointment && unappointment.invalid && (unappointment.dirty || unappointment.touched)">
+                            Please select Nature of Appointment</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Date of Joining</label>
+                        <input class="form-control myformcontrol" placeholder="Date of Joining" type="date" id="ujoining"
+                            name="ujoining" formControlName="ujoining" />
+                        <div class="text-danger"
+                            *ngIf="ujoining && ujoining.invalid && (ujoining.dirty || ujoining.touched)">
+                            Date of joining is needed</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Teacher Status</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="ustatus"
+                            name="ustatus" formControlName="ustatus">
+                            <option value="Active">Active</option>
+                            <option value="In Active">In Active</option>
+                        </select>
+
+                        <div class="text-danger" *ngIf="ustatus && ustatus.invalid && (ustatus.dirty || ustatus.touched)">
+                            Please select Yes or No from the options</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Phone Number</label><br>
+                        <input class="form-control myformcontrol" type="text" name="uphoneNo" id="uphoneNo" 
+                        formControlName="uphoneNo" placeholder="Phone No.">
+                        <div class="text-danger" *ngIf="uphoneNo && uphoneNo.invalid && (uphoneNo.dirty || uphoneNo.touched)">
+                            Phone number is required</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Email</label><br>
+                        <input class="form-control myformcontrol" type="text" name="uemail" id="uemail" 
+                        formControlName="uemail" placeholder="someone@example.com">
+                        <div class="text-danger" *ngIf="uemail && uemail.invalid && (uemail.dirty || uemail.touched)">
+                            Email is required</div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Role</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example"
+                            id="ustaffrole" name="ustaffrole" formControlName="ustaffrole">
+                            <option value="">Select</option>
+                            <option [value]="item.id" *ngFor="let item of staffRoles">{{item.name}}</option>
+                        </select>
+
+                        <div class="text-danger"
+                            *ngIf="ustaffrole && ustaffrole.invalid && (ustaffrole.dirty || ustaffrole.touched)">
+                            Please select a role</div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Class Incharge</label><br>
+                        <input [checked]="isClassInchargeYes" class="mt-3" type="radio" name="classStatus" id="classStatusYes" value="Yes" (click)="checkClassIncharge($event)">
+                        <label for="inputState">Yes</label>&nbsp;
+                        <input [checked]="isClassInchargeNo" type="radio" name="classStatus" id="classStatusNo" value="No" (click)="checkClassIncharge($event)">
+                        <label for="inputState">No</label>
+
+                    </div>
+                    <div class="form-group col-md-4" *ngIf="isClassIncharge">
+                        <label for="inputState">Class</label><br>
+                        <input class="form-control myformcontrol" type="text" name="uclassId" id="uclassId" formControlName="uclassId">
+
+                    </div>
+                    <div class="form-group col-md-4" *ngIf="isClassIncharge">
+                        <label for="inputState">Section</label><br>
+                        <input class="form-control myformcontrol" type="text" name="usectionId" id="usectionId" formControlName="usectionId">
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <!-- <label for="inputState">Teacher Photo</label> -->
+                        <!-- <input type="file" value="Choose File..." class="form-control  myformcontrol" 
+                        style="opacity:0.5; color: red; margin-top: 35px; margin-left: 20px;" id="uteacherPhoto" class="form-control-file" 
+                        name="uteacherPhoto" formControlName="uteacherPhoto"
+                        (change) = "onFileSelected($event)"> -->
+                        <img src="http://localhost:9009/images/{{teacherPic}}" alt="teacher pic" style="margin-top: 20px; margin-left: 20px; height: 70%;">
+                        <button id="uteacherPhoto" (click)="openPhotoUploadForm(uploadImageModal)" class="btn btn-primary">Change</button>
+                        <!-- <angular-file-uploader (fileSelected)="fileSelected($event)" [config]="afuConfig">
+                        </angular-file-uploader> -->
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-12">
+                    <div class="form-group text-center">
+                        <button type="button" class="btn btn-primary btn-round" (click)="onUpdate()">Save</button>
+                        &nbsp;<button type="button" class="btn btn-warning btn-round" (click)="dismissModel()">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</ng-template>
+<!-- update model end -->
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title"> Manage Teacher</h4>
+                        </div>
+                        <div class="col-md-6" *ngIf="createTeacher">
+                            <button type="button" class="btn btn-primary btn-round mr-2 float-right"
+                                (click)="open(createModal)">Create Teacher</button>
+
+                        </div>
+                    </div>
+
+                </div>
+                <!-- faculty View  -->
+                <div class="card-body">
+                    <table class="table table-responsive">
+                        <thead>
+                            <th style="text-align: center;">
+                                Photo
+                            </th>
+                            <th style="text-align: center;">
+                                Code
+                            </th>
+                            <th style="text-align: center;">
+                                Name
+                            </th>
+                            <th style="text-align: center;">
+                                Post
+                            </th>
+                            <th style="text-align: center;">
+                                Date of Joining
+                            </th>
+                            <th style="text-align: center;">
+                                Appointed for Subject
+                            </th>
+                            <th style="text-align: center;">Action</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let teacher of teachers">
+                                <td style="text-align: center; width: 20%;">
+                                    <img src="http://localhost:9009/images/{{teacher.teacherPhoto}}" alt="image">
+                                </td>
+                                <td style="text-align: center;">
+                                    {{teacher.teacherCode}}
+                                </td>
+                                <td style="text-align: center;">
+                                    <a role="button" style="color: #7e6eeb;" (click)="viewTeacher(teacher.teacherCode)"
+                                    *ngIf="teacher.classId != null && teacher.sectionId != null">
+                                        {{teacher.teacherName}}
+                                    </a>
+                                    <span *ngIf="teacher.classId == null && teacher.sectionId == null">{{teacher.teacherName}}</span>
+                                </td>
+                                <td style="text-align: center;">
+                                    {{teacher.post}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{teacher.dateOfJoining | date}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{teacher.subjectAppointed}}
+                                </td>
+                                <td class="td-actions" style="text-align: left;">
+                                    <button type="button" rel="tooltip" title="" *ngIf="viewTeacherProfile"
+                                        class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="View Teacher" (click)="viewTeacher(teacher.teacherCode)">
+                                        <i class="now-ui-icons users_single-02"></i>
+                                    </button>&nbsp;
+                                    <button type="button" rel="tooltip" title="" *ngIf="editTeacherData"
+                                        class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Edit Task" (click)="onEdit(updateModal, teacher)">
+                                        <i class="now-ui-icons ui-2_settings-90"></i>
+                                    </button>&nbsp;
+                                    <button type="button" rel="tooltip" title="" *ngIf="deleteTeacherRec"
+                                        class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Remove" (click)="deleteTeacher(teacher)">
+                                        <i class="now-ui-icons files_box text-info"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+npm install
+
+NGprime dropdown
+npm install @angular/cdk --save
+
+or
+
+npm i primeng
+
+
+ngx pagination:
+--------------------------
+
+npm i ngx-pagination
+
+For filtering:
+--------------------------
+npm i ng2-search-filter
+
+Multi Select Dropdown:
+---------------------------
+npm i ng-multiselect-dropdown
+
+Fontawesome
+-------------------------------
+npm install font-awesome --save
+
+For webcam
+--------------------------
+
+npm install ngx-webcam
+
+
+For Printing html page to pdf:
+------------------------------
+npm i ngx-print
+
+
+For Page capture: 
+------------------------------
+npm i ngx-capture
+
+
+Exporting excel template with dropdown
+---------------------------------------
+npm i exceljs
+npm i file-saver
+npm install --save @types/file-saver
+
+For reading or writing excel
+-----------------------------
+
+npm i read-excel-file
+npm i xlsx
+
+
+Convert JSON to pdf
+---------------------------------------
+npm i jspdf
+npm i jspdf-autotable
+
+To show spinner or progressbar
+----------------------------------------
+npm i ngx-spinner
+
+
+For styling the excelsheet
+----------------------------------------
+npm i xlsx-js-style

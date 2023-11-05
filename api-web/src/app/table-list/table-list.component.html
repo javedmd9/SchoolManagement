@@ -1,0 +1,131 @@
+<div class="panel-header panel-header-md">
+  <div class="ml-3 col-md-10">
+      <div class="card-user">
+          <form>
+              <div class="row">
+                  <div class="col-md-3 pr-1">
+                      <div class="form-group">
+                          <label class="text-white">Agency Name</label>
+                          <select class="form-control bg-white">
+                              <option>Agency1</option>
+                              <option>Agency2</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="col-md-3 pr-1">
+                      <div class="form-group">
+                          <label class="text-white">Status</label>
+                          <select class="form-control bg-white">
+                              <option>Active</option>
+                              <option>InActive</option>
+                          </select>
+                      </div>
+                  </div>
+                <div class="col-md-3 pr-1">
+                    <div class="form-group">
+                        <label class="text-white">Location</label>
+                        <select class="form-control bg-white">
+                            <option>Somalia</option>
+                            <option>Nairobi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 pr-1">
+                    <div class="form-group">
+                        <label class="text-white">Start Date</label>
+                        <input type="text"
+                        placeholder="2021-01-01"
+                        class="form-control bg-white"
+                        bsDatepicker
+                        [bsValue]="bsValue"
+                        [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }">
+                    </div>
+                </div>
+            </div>
+              <div class="row">
+                  <div class="col-md-12 form-group">
+                      <button type="button" class="btn btn-primary btn-round mr-2">Search</button>
+                      <button type="button" class="btn btn-warning btn-round">Reset</button>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title"> Manage Campaigns</h4>
+          <p class="category"> Click on Action button to Edit or Delete</p>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class=" text-primary">
+                <th>
+                  Id
+                </th>
+                <th>
+                  Content
+                </th>
+                <th>
+                  Location
+                </th>
+                <th>
+                  Start Date
+                </th>
+                <th>
+                  End Date
+                </th>
+                <th>
+                  Channels
+                </th>
+                <th>
+                  Agency Name
+                </th>
+                <th class="td-actions text-right">
+                  Actions
+                </th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of items">
+                  <td>
+                    C00{{item}}
+                  </td>
+                  <td>
+                    {{item}} GB Free Data on Subscription of any services.
+                  </td>
+                  <td>
+                    India
+                  </td>
+                  <td>
+                    2021-01-01
+                  </td>
+                  <td>
+                    2021-01-01
+                  </td>
+                  <td>
+                    IVR,VOICE
+                  </td>
+                  <td>
+                    A000{{item}}
+                  </td>
+                  <td class="td-actions text-right">
+                    <button type="button" rel="tooltip" title="" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
+                      <i class="now-ui-icons ui-2_settings-90"></i>
+                    </button>
+                    <button type="button" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
+                      <i class="now-ui-icons ui-1_simple-remove"></i>
+                    </button>
+                  </td>
+                </tr>               
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

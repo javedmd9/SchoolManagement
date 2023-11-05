@@ -1,0 +1,195 @@
+<div class="panel-header panel-header-md">
+    <div class="mr-3 col-md-10">
+        <div class="card-user">
+
+            <div class="row">
+                <div class="col-sm-4 pr-1">
+                    <div class="d-flex justify-content-between bg-success rounded p-2">
+                        <p class="text-white my-2">Session: {{currentSession.sessionName}}</p>
+                        <i style="cursor: pointer;" class="now-ui-icons ui-1_simple-add text-white my-2" (click)="addSession(createModal)"></i>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title"> Subjects</h4>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- faculty View  -->
+                <div class="card-body">
+                    <table class="table table-responsive">
+                        <thead>
+                            <th style="text-align: center;">
+                                Sl. No.
+                            </th>
+                            <th style="text-align: center;">
+                                Subject Code
+                            </th>
+                            <th style="text-align: center;">
+                                Subject Name
+                            </th>
+                            <th style="text-align: center;">Action</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of classSubjects | filter: data; index as i">
+                                <td style="text-align: center;">
+                                    {{i+1}}
+                                </td>
+                                <td hidden style="text-align: center;">
+                                    {{item.id}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{item.subjectCode}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{item.subjectName}}
+                                </td>
+                                
+                                <td class="td-actions" style="text-align: center;">
+                                    <button type="button" rel="tooltip" title=""
+                                        class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Remove" (click)="deleteSubject(item)">
+                                        <i class="now-ui-icons files_box text-info"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Add Subject</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form role="form" [formGroup]="createSubjectForm">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="inputState">Subject Code</label>
+                                <div class="input-group input-group-alternative">
+                                    <input class="form-control myformcontrol" placeholder="Subject Code" type="text"
+                                        id="subjectcode" name="subjectcode" formControlName="subjectcode" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="inputState">Subject Name</label>
+                                <div class="input-group input-group-alternative">
+                                    <input class="form-control myformcontrol" placeholder="Subject Name" type="text"
+                                        id="subjectname" name="subjectname" formControlName="subjectname" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-primary btn-round" (click)="onSubmit()">Save</button>
+                                &nbsp;<button type="button" class="btn btn-warning btn-round"
+                                    (click)="setDefaulltValue()">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add model starts  -->
+<ng-template #createModal let-modal>
+
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Session</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-responsive">
+                        <thead>
+                            <th style="text-align: center;">
+                                Sl. No.
+                            </th>
+                            <th style="text-align: center;">
+                                Session Name
+                            </th>
+                            <th style="text-align: center;">Action</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of sessionList; index as i">
+                                <td style="text-align: center;">
+                                    {{i+1}}
+                                </td>
+                                <td hidden style="text-align: center;">
+                                    {{item.id}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{item.sessionName}}
+                                </td>
+                                
+                                <td class="td-actions" style="text-align: center;">
+                                    <button type="button" rel="tooltip" title=""
+                                        class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Remove" (click)="deleteSession(item)">
+                                        <i class="now-ui-icons files_box text-info"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <form role="form" [formGroup]="createSessionForm">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="inputState">Session Name</label>
+                                <div class="input-group input-group-alternative">
+                                    <input class="form-control myformcontrol" placeholder="Session Name" type="text"
+                                        id="sessionname" name="sessionname" formControlName="sessionname" />
+                                </div>
+        
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-round" (click)="saveSession()">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+<!-- add model end -->

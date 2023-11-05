@@ -1,0 +1,8 @@
+.table-responsive{
+    overflow-x: auto;
+    overflow-y: auto;
+}
+.gradientModelBackground{
+    /* background: linear-gradient(160deg, rgba(0, 0, 0, 0.5), rgba(126, 110, 235,1)); */
+    background: linear-gradient(160deg, #2c2c2c 0%, #8dabd5 100%);
+}

@@ -1,0 +1,28 @@
+.table-responsive{
+    overflow-x: auto;
+}
+img{
+    height: 30%;
+    width: 30%;
+}
+#docTable td{
+    /* border: 1px solid green; */
+    width: 100%;
+}
+
+::ng-deep .ngx-pagination {
+  padding-left: 0px !important;
+}
+
+::ng-deep .ngx-pagination .current {
+  background: #2CA8FF !important;
+  border: transparent !important;
+  border-radius: 20px !important;
+}
+
+::ng-deep .ngx-pagination a:hover {
+  background: #2CA8FF !important;
+  border-radius: 20px !important;
+  border: transparent !important;
+  color: white !important;
+}

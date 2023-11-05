@@ -1,0 +1,10 @@
+<tr>
+    <td colspan="7">
+        <ul class="nav nav-pills float-right">
+            <li class="nav-item" *ngFor="let item of pages; let i = index">
+                <a href="#" class="nav-link rounded-circle active" (click)="setPage(i,$event)"
+                    [ngClass]="{'active': i==campus.pageNumber}">{{i+1}} </a>
+            </li>
+        </ul>
+    </td>
+</tr>

@@ -1,0 +1,13 @@
+.sidebar-wrapper{
+    background-color: #7e6eeb !important;
+}
+.logo{
+    background-color: #7e6eeb !important;
+}
+.nav li.active a>p{
+    color: #7e6eeb !important;
+}
+
+.nav li.active a>i{
+    color: #7e6eeb !important;
+}

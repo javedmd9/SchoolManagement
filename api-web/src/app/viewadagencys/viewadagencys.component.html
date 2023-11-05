@@ -1,0 +1,110 @@
+<div class="panel-header panel-header-md">
+    <div class="ml-3 col-md-10">
+        <div class="card-user">
+            <form>
+                <div class="row">
+                    <div class="col-md-4 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Agency Name</label>
+                            <select class="form-control bg-white">
+                                <option>Agency1</option>
+                                <option>Agency2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Status</label>
+                            <select class="form-control bg-white">
+                                <option>Active</option>
+                                <option>InActive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <button type="button" class="btn btn-primary btn-round mr-2">Search</button>
+                        <button type="button" class="btn btn-warning btn-round">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"> Manage Ad Agency</h4>
+                    <p class="category"> Click on Action button to Edit or Delete</p>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class=" text-primary">
+                                <th>
+                                    AgencyId
+                                </th>
+                                <th>
+                                    Email Id
+                                </th>
+                                <th>
+                                    Agency Name
+                                </th>
+                                <th>
+                                    Mobile No.
+                                </th>
+                                <th>
+                                    Users
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th class="td-actions text-right">
+                                    Actions
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of items">
+                                    <td>
+                                        A000{{item}}
+                                    </td>
+                                    <td>
+                                        agency{{item}}@email.com
+                                    </td>
+                                    <td>
+                                        AgencyUser{{item}}
+                                    </td>
+                                    <td>
+                                        +91 881818180{{item}}
+                                    </td>
+                                    <td>
+                                        {{item}}
+                                    </td>
+                                    <td>
+                                        ACTIVE
+                                    </td>
+                                    <td class="td-actions text-right">
+                                        <button type="button" rel="tooltip" title=""
+                                            class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral"
+                                            data-original-title="Edit Task">
+                                            <i class="now-ui-icons ui-2_settings-90"></i>
+                                        </button>
+                                        <button type="button" rel="tooltip" title=""
+                                            class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral"
+                                            data-original-title="Remove">
+                                            <i class="now-ui-icons ui-1_simple-remove"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

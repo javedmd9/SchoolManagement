@@ -1,0 +1,314 @@
+<div class="panel-header panel-header-md">
+  <div class="ml-3 col-md-10">
+    <div class="card-user">
+      <form #criteriaForm="ngForm">
+        <div class="row">
+          <div class="col-md-4 pr-1">
+            <div class="form-group">
+              <label class="text-white">Campus Name</label>
+              <select class="form-control bg-white" [(ngModel)]="campus.name" name="name">
+                <option value="">Select</option>
+                <option [value]="campusName.name" *ngFor="let campusName of campuses1">{{campusName.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4 pr-1">
+            <div class="form-group">
+              <label class="text-white">City</label>
+              <select class="form-control bg-white" [(ngModel)]="campus.city" name="city">
+                <option value="">Select</option>
+                <option *ngFor="let campusCity of campuses1" [value]="campusCity.city">{{campusCity.city}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 form-group">
+            <button type="button" class="btn btn-primary btn-round mr-2" (click)="getFilteredCampus()">Search</button>
+            <button type="button" class="btn btn-warning btn-round"
+              (click)="ngOnInit(); criteriaForm.resetForm()">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<ng-template #createModal let-modal>
+
+  <div class="modal-body">
+    <div class="main-content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-md-6 pr-1">
+                  <h5 class="title" style="font-weight: bold;">Create Campus</h5>
+                </div>
+                <div class="col-md-6 px-1" style="text-align: right;">
+                  <button aria-label='delete item' (click)="dismissModel()" type='button'>X</button>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <form #campusCreateForm="ngForm">
+                <div class="row">
+                  <div class="col-md-6 pr-1">
+                    <div class="form-group">
+                      <label>Campus Name</label>
+                      <input type="text" [(ngModel)]="campus.name" name="name" class="form-control"
+                        placeholder="Campus Name" value="">
+                    </div>
+                  </div>
+                  <div class="col-md-6 px-1">
+                    <div class="form-group">
+                      <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" [(ngModel)]="campus.address" name="address" class="form-control"
+                          placeholder="Address" value="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 pr-1">
+                    <div class="form-group">
+                      <label>City</label>
+                      <input type="text" [(ngModel)]="campus.city" name="city" class="form-control" placeholder="City"
+                        value="">
+                    </div>
+                  </div>
+                  <div class="col-md-6 pl-1">
+                    <div class="form-group">
+                      <label>Country</label>
+                      <select class="form-control" [(ngModel)]="campus.country" name="country">
+                        <option value="Somalia" selected>Somalia</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 pr-1">
+                    <div class="form-group">
+                      <label>Postal Code</label>
+                      <input type="text" [(ngModel)]="campus.postalcode" name="postalcode" class="form-control"
+                        placeholder="Postal Code" value="">
+                    </div>
+                  </div>
+                  <div class="col-md-6 pl-1">
+                    <div class="form-group">
+                      <label>Number of Classrooms</label>
+                      <input type="number" [(ngModel)]="campus.classroomscount" name="classroomscount"
+                        class="form-control" placeholder="0" value="">
+                    </div>
+                  </div>
+
+                </div>
+                <div>
+                  <div class="col-md-12">
+                    <div class="form-group text-center">
+                      <button type="button" class="btn btn-primary btn-round"
+                        (click)="saveCampus(); campusCreateForm.resetForm()">Create</button>
+                      &nbsp;<button type="reset" class="btn btn-warning btn-round">Reset</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-template>
+<!-- Edit campus  -->
+<ng-template #updateModal let-modal>
+
+  <div class="modal-body">
+    <div class="main-content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-md-6 pr-1">
+                  <h5 class="title" style="font-weight: bold;">Edit Campus</h5>
+                </div>
+                <div class="col-md-6 px-1" style="text-align: right;">
+                  <button aria-label='delete item' (click)="dismissModel()" type='button'>X</button>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="row">
+                  <div class="col-md-6 pr-1">
+                    <div class="form-group">
+                      <label>Campus Name</label>
+                      <input type="text" [(ngModel)]="viewCampus.name" name="name" class="form-control"
+                        placeholder="Campus Name" value="">
+                    </div>
+                  </div>
+                  <div class="col-md-6 px-1">
+                    <div class="form-group">
+                      <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" [(ngModel)]="viewCampus.address" name="address" class="form-control"
+                          placeholder="Address" value="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 pr-1">
+                    <div class="form-group">
+                      <label>City</label>
+                      <input type="text" [(ngModel)]="viewCampus.city" name="city" class="form-control"
+                        placeholder="City" value="">
+                    </div>
+                  </div>
+                  <div class="col-md-6 pl-1">
+                    <div class="form-group">
+                      <label>Country</label>
+                      <select class="form-control" [(ngModel)]="viewCampus.country" name="country">
+                        <option [value]="viewCampus.country" selected disabled>{{viewCampus.country}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 pr-1">
+                    <div class="form-group">
+                      <label>Postal Code</label>
+                      <input type="text" [(ngModel)]="viewCampus.postalcode" name="postalcode" class="form-control"
+                        placeholder="Postal Code" value="">
+                    </div>
+                  </div>
+                  <div class="col-md-6 pl-1">
+                    <div class="form-group">
+                      <label>Number of Classrooms</label>
+                      <input type="number" [(ngModel)]="viewCampus.classroomscount" name="classroomscount"
+                        class="form-control" placeholder="0" value="">
+                    </div>
+                  </div>
+
+                </div>
+                <div>
+                  <div class="col-md-12">
+                    <div class="form-group text-center">
+                      <button type="button" class="btn btn-primary btn-round float-right"
+                        (click)="updateCampus()">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!-- edit campus end -->
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-md-6">
+              <h4 class="card-title"> Manage Campus</h4>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-primary btn-round mr-2 float-right"
+                (click)="open(createModal)">Create Campus</button>
+
+            </div>
+          </div>
+
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class=" text-primary">
+                <th>
+                  Id
+                </th>
+                <th>
+                  Name
+                </th>
+                <th>
+                  Address
+                </th>
+                <th>
+                  City
+                </th>
+                <th>
+                  Country
+                </th>
+                <th>
+                  No. of Classes
+                </th>
+                <th class="td-actions text-right">
+                  Actions
+                </th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let campus of campuses | paginate : {
+                  itemsPerPage: pageSize,
+                  currentPage: page,
+                  totalItems: count
+                };
+          let i = index" [class.active]="i == currentIndex" (click)="setActiveTutorial(tutorial, i)">
+                  <td [attr.data-sectionvalue]="campus.id">
+                    {{campus.id}}
+                  </td>
+                  <td>
+                    {{campus.name}}
+                  </td>
+                  <td>
+                    {{campus.address}}
+                  </td>
+                  <td>
+                    {{campus.city}}
+                  </td>
+                  <td>
+                    {{campus.country}}
+                  </td>
+                  <td>
+                    {{campus.classroomscount}}
+                  </td>
+                  <td class="td-actions text-right">
+                    <button type="button" rel="tooltip" title=""
+                      class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task"
+                      (click)="editModal(updateModal, campus.id)">
+                      <i class="now-ui-icons ui-2_settings-90"></i>
+                    </button>
+                    <button type="button" rel="tooltip" title=""
+                      class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove"
+                      (click)="deleteCampus(campus.id)">
+                      <i class="now-ui-icons ui-1_simple-remove"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="7">
+                    <ul class="nav nav-pills float-right">
+                      <li class="nav-item" *ngFor="let item of pages; let i = index">
+                        <a href="#" class="nav-link rounded-circle active" (click)="setPage(i,$event)"
+                        [ngClass]="{'active': i==campus.pageNumber}">{{i+1}} </a>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

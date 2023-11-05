@@ -1,0 +1,14 @@
+
+
+.table-responsive {
+    
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+}
+
+.nav-link.rounded-circle.active{
+    color: #fff;
+  background-color: #f96332;
+  border-color: #5cb85c;
+}

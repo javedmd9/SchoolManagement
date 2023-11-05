@@ -1,0 +1,373 @@
+<div class="panel-header panel-header-md">
+    <div class="mr-3 col-md-10">
+        <div class="card-user">
+            <div class="row">
+                <div class="col-sm-6 pr-1">
+                    <div class="form-group">
+                        <label class="text-white">Class</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="fclassname"
+                            name="fclassname" (change)="findTimeTableByClass($event)">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of assignClassList" [value]="item.classId + ' ' + item.sectionId">{{item.classId + ' ' +
+                                item.sectionId}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Class Time Table</h4>
+                        </div>
+                        <div class="col-md-6">
+
+                            <button type="button" class="btn btn-primary btn-round mr-2 float-right"
+                                (click)="openAssignTimeTableModel(createTimeTable)" *ngIf="createTimeTable">Create Bulk</button>
+                            <button type="button" class="btn btn-primary btn-round mr-2 float-right"
+                            (click)="openAssignTimeTableModel2(createTimeTable2)" *ngIf="createTimeTable">Create</button>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- faculty View  -->
+                <div class="card-body">
+                    <table class="abc">
+                        <thead>
+                            <th style="text-align: center;">
+                                Day
+                            </th>
+                            <th style="text-align: center;">
+                                1
+                            </th>
+                            <th style="text-align: center;">
+                                2
+                            </th>
+                            <th style="text-align: center;">
+                                3
+                            </th>
+                            <th style="text-align: center;">
+                                4
+                            </th>
+                            <th style="text-align: center;">
+                                5
+                            </th>
+                            <th style="text-align: center;">
+                                6
+                            </th>
+                            <th style="text-align: center;">
+                                7
+                            </th>
+                            <th style="text-align: center;">
+                                8
+                            </th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of timeTableReport.timeTableObject">
+                                <td *ngFor="let stats of item">
+                                    <span class="linebreak">{{stats?stats.replace(' ','\n'):'\t\t\t'}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add model starts  -->
+<ng-template #createTimeTable let-modal>
+
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Create Time Table</h5>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <form role="form" [formGroup]="filterClassSubjectForm">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="inputState">Session Name</label>
+                            <div class="input-group input-group-alternative">
+                                <select class="form-control  myformcontrol" aria-label="Default select example"
+                                    id="dsessionname" name="dsessionname" formControlName="dsessionname">
+                                    <option value="">Select</option>
+                                    <option *ngFor="let item of sessionList" [value]="item">{{item}}</option>
+                                </select>
+                            </div>
+    
+                        </div>
+                        
+                        <div class="form-group col-md-3">
+                            <label for="inputState">Class</label>
+                            <select class="form-control  myformcontrol" aria-label="Default select example" id="dclassname"
+                                name="dclassname" formControlName="dclassname">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of classList" [value]="item">{{item}}</option>
+                            </select>
+    
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-round mt-4"
+                                    (click)="viewClassSubject()">View</button>
+                            </div>
+                        </div>
+                    </div>
+    
+    
+                </form>
+                <hr>
+            <form role="form" [formGroup]="createClassTimeTableForm">
+                <div formArrayName="subjectarrayform">
+                    <div class="row mt-1"
+                        *ngFor="let item of createClassTimeTableForm.get('subjectarrayform')['controls']; index as i"
+                        [formGroupName]="i">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputState">Teacher Name</label>
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="teachername" name="teachername"
+                                        formControlName="teachername">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Subject</label>
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="subjectname"
+                                        name="subjectname" formControlName="subjectname">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Class</label>
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="classID"
+                                        name="classID" formControlName="classID">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Section</label>
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="sectionId"
+                                        name="sectionId" formControlName="sectionId">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="inputState">Monday</label>
+                                    <select class="form-control  myformcontrol" aria-label="Default select example" id="monday" name="monday"
+                                        formControlName="monday">
+                                        <option value="">Period</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputState">Tuesday</label>
+                                    <select class="form-control  myformcontrol" aria-label="Default select example" id="tuesday" name="tuesday"
+                                        formControlName="tuesday">
+                                        <option value="">Period</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputState">Wednesday</label>
+                                    <select class="form-control  myformcontrol" aria-label="Default select example" id="wednesday" name="wednesday"
+                                        formControlName="wednesday">
+                                        <option value="">Period</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputState">Thursday</label>
+                                    <select class="form-control  myformcontrol" aria-label="Default select example" id="thursday" name="thursday"
+                                        formControlName="thursday">
+                                        <option value="">Period</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputState">Friday</label>
+                                    <select class="form-control  myformcontrol" aria-label="Default select example" id="friday" name="friday"
+                                        formControlName="friday">
+                                        <option value="">Period</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputState">Saturday</label>
+                                    <select class="form-control  myformcontrol" aria-label="Default select example" id="saturday" name="saturday"
+                                        formControlName="saturday">
+                                        <option value="">Period</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12" style="text-align: right;">
+                    <div class="form-group float-right">
+                        <button type="button" class="btn btn-primary btn-round" (click)="saveTimeTable()">Save</button>
+                    </div>
+                </div>
+            </form>
+              </div>
+            </div>
+        </div>
+    </div>
+  
+  </ng-template>
+  <!-- add model end -->
+<!-- add model2 starts  -->
+<ng-template #createTimeTable2 let-modal>
+
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Create Time Table</h5>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                
+            <form role="form" [formGroup]="createOptionalSubjectClassTimeTableForm">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Session Name</label>
+                        <div class="input-group input-group-alternative">
+                            <select class="form-control  myformcontrol" aria-label="Default select example"
+                                id="sessionname" name="sessionname" formControlName="sessionname">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of sessionList" [value]="item">{{item}}</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Class</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="classname"
+                            name="classname" formControlName="classname" (change)="viewClassSubjectList()">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of assignClassList" [value]="item.classId + ' ' + item.sectionId">{{item.classId + ' ' + item.sectionId}}</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Subject</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="subjectname"
+                            name="subjectname" formControlName="subjectname">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of assignedSubjects" [value]="item.subjectsDto.id">{{item.subjectsDto.subjectName}}</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Teacher Name</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="teachername"
+                            name="teachername" formControlName="teachername">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of teachersList" [value]="item.id">{{item.teacherCode}} --- {{item.teacherName}}</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Day</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="daysname"
+                            name="daysname" formControlName="daysname">
+                            <option value="">Select</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Period</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="periodno"
+                            name="periodno" formControlName="periodno">
+                            <option value="">Select</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-md-12" style="text-align: right;">
+                    <div class="form-group float-right">
+                        <button type="button" class="btn btn-primary btn-round" (click)="saveOptionalSubjectTimeTable()">Save</button>
+                    </div>
+                </div>
+            </form>
+              </div>
+            </div>
+        </div>
+    </div>
+  
+  </ng-template>
+  <!-- add model2 end -->

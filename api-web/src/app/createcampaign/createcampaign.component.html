@@ -1,0 +1,133 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="title">Create Campaign</h5>
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="row">
+              <div class="col-md-6 pr-1">
+                <div class="form-group">
+                  <label>Location</label>
+                  <!-- <input type="text" class="form-control" placeholder="Location" value="Somalia"> -->
+                  <select class="form-control">
+                    <option>Somalia</option>
+                    <option>Mogadhishu</option>
+                    <option>Hargesia</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6 px-1">
+                <div class="form-group">
+                  <label>Channels</label>
+                  <!-- <input type="text" class="form-control" placeholder="IVR" value="IVR"> -->
+                  <select class="form-control">
+                    <option>USSD</option>
+                    <option>VOICE</option>
+                    <option>SMS</option>
+                    <option>Service - MyStatus</option>
+                    <option>Service - RBT</option>
+                    <option>Service - End of Call</option>
+                    <option>Service - USSD+</option>
+                    <option>Service - Beep</option>
+                    <option>Service - S@T</option>
+                    <option>Service - Whatsapp</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 pr-1">
+                <div class="form-group">
+                  <label>Start Date</label>
+                      <input type="text"
+                        placeholder="2021-01-01"
+                        class="form-control"
+                        bsDatepicker
+                        [bsValue]="bsValue"
+                        [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }">
+                  </div>
+              </div>
+              <div class="col-md-6 pl-1">
+                <div class="form-group">
+                  <label>End Date</label>
+                    <input type="text"
+                      placeholder="2022-01-01"
+                      class="form-control"
+                      bsDatepicker
+                      [bsValue]="bsValue"
+                      [bsConfig]="{ isAnimated: true, containerClass: 'theme-red' }">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 pr-1">
+                <div class="form-group">
+                  <label>Upload Selective Numbers</label>
+                  <div class="custom-file form-control">
+                    <input type="file" class="custom-file-input" id="customFileLang" lang="en">
+                    <label class="custom-file-label" for="customFileLang">Select file</label>
+                  </div>
+                </div>
+              </div>
+                <div class="col-md-6 pl-1">
+                  <div class="form-group">
+                    <label>Status</label>
+                    <!-- <input type="text" class="form-control" placeholder="Location" value="Somalia"> -->
+                    <select class="form-control">
+                      <option>Active</option>
+                      <option>InActive</option>
+                    </select>
+                  </div>
+                </div>
+              
+            </div>
+            <div class="row">
+              <div class="col-md-4 pr-1">
+                <div class="form-group">
+                  <label>Plans</label>
+                  <select class="form-control">
+                    <option>Monthly_Plan</option>
+                    <option>Weekly_Plan</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4 px-1">
+                <div class="form-group">
+                  <label>Amount</label>
+                  <input type="text" class="form-control" disabled = "" placeholder="Amount" value="400">
+                </div>
+              </div>
+              <div class="col-md-4 pl-1">
+                <div class="form-group">
+                  <label>Validity(in days)</label>
+                  <input type="number" class="form-control" disabled = "" placeholder="7">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Ad Content</label>
+                  <textarea rows="2" cols="2" class="form-control" placeholder="Here can be your description" value="Mike">Content of Mobile Ad</textarea>
+                </div>
+              </div>
+            </div>
+            <div>
+                <div class="col-md-12">
+                    <div class="form-group text-center">
+                        <button type="button" class="btn btn-primary btn-round">Create</button>
+                        <button type="button" class="btn btn-warning btn-round">Reset</button>
+                    </div>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

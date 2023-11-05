@@ -1,0 +1,49 @@
+#attendanceMonth, #sClassId, #sSectionId{
+    color: #7e6eeb;
+}
+.table-responsive {
+    display: table;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+.abc{
+    width: 100%;
+}
+.abc{
+    overflow-y: scroll;
+}
+.abc th {
+    color: #7e6eeb;
+}
+.abc th, td{
+    border: 1px solid #7e6eeb;
+    text-align: center;
+}
+::ng-deep .abc .customHeader{
+    padding-top: 20px;
+}
+/* ::ng-deep .my-class {
+    .modal-dialog {
+        width: 80%;
+    }
+
+    .modal-content {
+        //   color: white;
+    }
+
+    .modal-header {
+        //   background-color: red;
+    }
+
+    .modal-body {
+        //   background-color: green;
+    }
+} */
+
+/* ::ng-deep .my-class .modal-body {
+    background-color: green;  
+} */
+
+::ng-deep .my-class .modal-header {
+    background-color: rgb(207, 203, 203);  
+}

@@ -1,0 +1,12 @@
+img{
+    height: 30%;
+    width: 30%;
+}
+.table-responsive{
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.profileImage{
+    height: 100%;
+    width: 100%;
+}

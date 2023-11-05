@@ -1,0 +1,24 @@
+.table-responsive{
+    display: table;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+.gradientModelBackground{
+    /* background: linear-gradient(160deg, rgba(0, 0, 0, 0.5), rgba(126, 110, 235,1)); */
+    background: linear-gradient(160deg, #2c2c2c 0%, #8dabd5 100%);
+}
+
+.search-results{
+    max-width: 600px;
+    width: 65%;
+    margin: 20px auto 0 auto;
+}
+
+.search-results hr{
+    border: none;
+    height: 1px;
+    background: lightblue;
+}
+.search-results p{
+    margin: 10px 0;
+}

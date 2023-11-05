@@ -1,0 +1,300 @@
+<div class="panel-header panel-header-md">
+    <div class="ml-3 col-md-10">
+        <div class="card-user">
+            <form #criteriaForm="ngForm">
+                <div class="row">
+                    <div class="col-md-4 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Faculty Name</label>
+                            <select class="form-control bg-white" [(ngModel)]="filterFaculty.name"
+                                name="filterFacultyName">
+                                <option value="">Select</option>
+                                <option [value]="facultyName" *ngFor="let facultyName of facultyListByName">
+                                    {{facultyName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Status</label>
+                            <select class="form-control bg-white" [(ngModel)]="filterFaculty.status"
+                                name="filerFacultyStatus" #mySelect3 (change)='onOptionsSelected(mySelect3.value)'>
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">In Active</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Level</label>
+                            <select class="form-control bg-white" [(ngModel)]="filterFaculty.level"
+                                name="filerFacultyLevel" #mySelect2 (change)='onOptionsSelected(mySelect2.value)'>
+                                <option value="1">Graduate</option>
+                                <option value="2">Post Graduate</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <button type="button" class="btn btn-primary btn-round mr-2"
+                            (click)="getFilteredFaculty()">Search</button>
+                        <button type="button" class="btn btn-warning btn-round"
+                            (click)="viewAllFaculty()">Reset</button>
+                        <!-- (click)="viewAllFaculty(); criteriaForm.resetForm()">Reset</button> -->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- // add faculty -->
+<ng-template #createModal let-modal>
+
+    <div class="modal-body">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-6 pr-1">
+                                    <h5 class="title" style="font-weight: bold;">Create Faculty</h5>
+                                </div>
+                                <div class="col-md-6 px-1" style="text-align: right;">
+                                    <button aria-label='delete item' (click)="dismissModel()" type='button'>X</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form #myForm="ngForm">
+                                <div class="row">
+                                    <div class="col-md-6 pr-1">
+                                        <div class="form-group">
+                                            <label>Faculty Name</label>
+                                            <input type="text" [(ngModel)]="faculty.name" name="name"
+                                                class="form-control" placeholder="Faculty Name" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 px-1">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <label>Description</label>
+                                                <input type="text" [(ngModel)]="faculty.description" name="description"
+                                                    class="form-control" placeholder="Description" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 pr-1">
+                                        <div class="form-group">
+                                            <label>Level</label>
+                                            <select class="form-control bg-white" [(ngModel)]="faculty.level"
+                                                name="level" #mySelect2
+                                                (change)='onOptionsSelected(mySelect2.value)'>
+                                                <option value="1">Graduate</option>
+                                                <option value="2">Post Graduate</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 pl-1">
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <select class="form-control" [(ngModel)]="faculty.status" name="status">
+                                                <option value="ACTIVE">Active</option>
+                                                <option value="INACTIVE">In Active</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="col-md-12">
+                                        <div class="form-group text-center">
+                                            <button type="button" class="btn btn-primary btn-round"
+                                                (click)="saveFaculty(); myForm.resetForm()">Create</button>
+                                            &nbsp;<button type="reset" class="btn btn-warning btn-round">Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+<!-- add faculty end -->
+
+<!-- Edit faculty  -->
+<ng-template #updateModal let-modal>
+
+    <div class="modal-body">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-6 pr-1">
+                                    <h5 class="title" style="font-weight: bold;">Edit Faculty</h5>
+                                </div>
+                                <div class="col-md-6 px-1" style="text-align: right;">
+                                    <button aria-label='delete item' (click)="dismissModel()" type='button'>X</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-6 pr-1">
+                                        <div class="form-group">
+                                            <label>Faculty Name</label>
+                                            <input type="text" [(ngModel)]="viewFaculty.name" name="name"
+                                                class="form-control" placeholder="Faculty Name" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 px-1">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <label>Description</label>
+                                                <input type="text" [(ngModel)]="viewFaculty.description"
+                                                    name="description" class="form-control" placeholder="Description"
+                                                    value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 pr-1">
+                                        <div class="form-group">
+                                            <label>Level</label>
+                                            <select class="form-control bg-white" [(ngModel)]="viewFaculty.level"
+                                                name="level" #mySelect3 (change)='onOptionsSelected(mySelect3.value)'>
+                                                <option value="viewFaculty">{{viewFaculty.level}}</option>
+                                                <option value="1">Graduate</option>
+                                                <option value="2">Post Graduate</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 pl-1">
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <select class="form-control" [(ngModel)]="viewFaculty.status" name="status"
+                                            #mySelect4 (change)='onOptionsSelected(mySelect4.value)'>
+                                                <option value="viewFaculty.status">{{viewFaculty.status}}</option>
+                                                <option value="ACTIVE">Active</option>
+                                                <option value="INACTIVE">In Active</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-md-12">
+                                        <div class="form-group text-center">
+                                            <button type="button" class="btn btn-primary btn-round"
+                                                (click)="updateFaculty()">Save</button>
+                                            &nbsp;<button type="button" class="btn btn-warning btn-round"
+                                                (click)="dismissModel()">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!-- edit faculty end -->
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title"> Manage Faculty</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-primary btn-round mr-2 float-right"
+                                (click)="open(createModal)">Create Faculty</button>
+
+                        </div>
+                    </div>
+
+                </div>
+                <!-- faculty View  -->
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <th style="text-align: center;">
+                                Name
+                            </th>
+                            <th style="text-align: center;">
+                                Status
+                            </th>
+                            <th style="text-align: center;">
+                                Level
+                            </th>
+                            <th style="text-align: center;">
+                                Description
+                            </th>
+                            <th style="text-align: center;">Action</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let faculty of facultyList">
+                                <td style="text-align: center;">
+                                    {{faculty.name}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{faculty.status}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{faculty.level}}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{faculty.description}}
+                                </td>
+                                <td class="td-actions" style="text-align: center;">
+                                    <button type="button" rel="tooltip" title=""
+                                        class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Edit Task" (click)="editModal(updateModal, faculty.id)">
+                                        <i class="now-ui-icons ui-2_settings-90"></i>
+                                    </button>&nbsp;
+                                    <button type="button" rel="tooltip" title=""
+                                        class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Remove" (click)="deleteFaculty(faculty.id)">
+                                        <i class="now-ui-icons ui-1_simple-remove"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- <div class="d-flex justify-content-between p-2">
+          <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
+              [pageSize]="service.pageSize">
+          </ngb-pagination>
+
+          <select class="custom-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
+              <option [ngValue]="5">5 items per page</option>
+              <option [ngValue]="10">10 items per page</option>
+
+          </select>
+      </div> -->
+
+
+                </div>
+                <!--End faculty View  -->
+
+            </div>
+        </div>
+    </div>
+</div>

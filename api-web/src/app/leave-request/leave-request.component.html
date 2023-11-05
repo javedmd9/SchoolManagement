@@ -1,0 +1,183 @@
+<div class="panel-header panel-header-md">
+    <div class="mr-3 col-md-10">
+        <div class="card-user">
+
+            <div class="row">
+                <div class="col-sm-6 pr-1">
+                    <div class="form-group">
+                        <label class="text-white">Filter</label>
+                        <input type="text" class="form-control" placeholder="Type to search" [(ngModel)]="data">
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group ">
+
+                    <button type="button" class="btn btn-primary btn-round"
+                        (click)="openFilterModel(filterModal)">Custom Filter</button>
+                    <!-- (click)="viewAllFaculty(); criteriaForm.resetForm()">Reset</button> -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Manage Students</h4>
+                        </div>
+                        <div class="col-md-6">
+
+                            <button type="button" class="btn btn-primary btn-round mr-2 float-right"
+                                (click)="open(createModal)" *ngIf="canCreateStudent">Create</button> &nbsp;
+                            <button type="button" class="btn btn-primary btn-round mr-2 float-right" *ngIf="bulkUploadData"
+                            (click)="openBulkUploadDialog(bulkUploadModal)" id="btn1" name="btn1">Bulk Upload</button>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- faculty View  -->
+                <div class="card-body">
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">
+                                    Leave ID
+                                </th>
+                                <th style="text-align: center;">
+                                    Subject
+                                </th>
+                                <th style="text-align: center;">
+                                    Message
+                                </th>
+                                <th style="text-align: center;">
+                                    Date
+                                </th>
+                                <th style="text-align: center;">
+                                    Role
+                                </th>
+                                <th style="text-align: center;">
+                                    Submitted By
+                                </th>
+                                <th style="text-align: center;">
+                                    Approved By
+                                </th>
+                                <th style="text-align: center;">
+                                    Status
+                                </th>
+                                <th style="text-align: center;">
+                                    Action
+                                </th>
+                            </tr>
+                            
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of leaveRequestList
+                            | paginate: { itemsPerPage: itemPerPage, currentPage: p, totalItems: pages }">
+                                <td>{{item.id}}</td>
+                                <td>{{item.letterSubject}}</td>
+                                <td><span (click)="openViewLeaveApplicationModel(viewLeaveApp, item)" style="cursor: pointer; color: blue;font-style: italic;">
+                                    {{(item.letterBody | slice:0:20) + '...'}}</span></td>
+                                <td>{{item.applicationDate | date}}</td>
+                                <td>{{item.roleName}}</td>
+                                <td>{{item.submittedByPersonName['name']}}</td>
+                                <td>{{item.approvedByName}}</td>
+                                <td>{{item.status}}</td>
+                                <td>
+                                    <button type="button" rel="tooltip" title="" *ngIf="item.status == null || item.status != 'APPROVED'"
+                                        class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Approve Task" (click)="approveLeaveRequest(item)">
+                                        <i class="now-ui-icons ui-1_check"></i>
+                                    </button>
+                                    <button type="button" rel="tooltip" title="" *ngIf="item.status != 'REJECTED'"
+                                        class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral"
+                                        data-original-title="Approve Task" (click)="rejectLeaveRequest(item)">
+                                        <i class="now-ui-icons ui-1_simple-remove"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                              <td colspan="9">
+                                <pagination-controls directionLinks="true" responsive="true" previousLabel="" nextLabel=""
+                                  (pageChange)="pageChangeEvent($event)"></pagination-controls>
+                              </td>
+                            </tr>
+                          </tfoot>
+                    </table>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- view leave request model starts  -->
+<ng-template #viewLeaveApp let-modal>
+
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Leave Application</h5>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <form role="form" [formGroup]="viewApplicationRequest">
+                  <div class="row">
+                      <div class="form-group col-md-8">
+                          <label for="inputState">Subject</label>
+                          <div class="input-group input-group-alternative">
+                              <input class="form-control myformcontrol" placeholder="Subject" type="text"
+                                  id="appsubject" name="appsubject" formControlName="appsubject" />
+                          </div>
+    
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputState">Leave ID</label>
+                        <div class="input-group input-group-alternative">
+                            <input class="form-control myformcontrol" placeholder="Leave ID" type="text"
+                                id="leaveid" name="leaveid" formControlName="leaveid" />
+                        </div>
+  
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-12">
+                      <label for="inputState">Message</label>
+                      <div class="input-group input-group-alternative">
+                          <textarea class="form-control" placeholder="Message" rows="10" style="height: 100px;"
+                              id="appmessage" name="appmessage" formControlName="appmessage"></textarea>
+                      </div>
+    
+                  </div>
+                </div>
+                  <div class="col-md-12">
+                      <div class="form-group">
+                          <button type="button" class="btn btn-primary btn-round" (click)="approveApplication()">Approve</button>
+                          <button type="button" class="btn btn-warning btn-round" (click)="rejectApplication()">Reject</button>
+                      </div>
+                  </div>
+              </form>
+              </div>
+            </div>
+        </div>
+    </div>
+  
+  </ng-template>
+  <!-- view leave request model end -->
