@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { take, map, retry, shareReplay, first } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { AuthguardService } from './authguard.service';
-import { ROUTES } from './components/sidebar/sidebar.component';
 import { RoleguardGuard } from './roleguard.guard';
-import { AuthRequestDto, Roles } from './security/authRequestDto.model';
+import { AuthRequestDto, Roles } from './security/AuthRequestDto.model';
 import { AssignSubjectsTeacherDto, AttendanceDto, CertificateDto, ExamDateSheetDto, ExaminationDto, LeaveRequestDto, MarksDto, NewPrivilegeDto, OtherMarksDto, Privilege, PrivilegeDto, SchoolSession, StudentDocumentDto, StudentDto, StudentMarkDto, SubjectDto, TeacherDto, TempOtherMarkDto } from './teachers/teacher.model';
 
 @Injectable({
@@ -315,8 +314,9 @@ export class CampusService {
     return this.http.post("http://localhost:9009/examination/create", examDto);
   }
 
-  getAllExamination(sessionName: string) {
-    return this.http.post("http://localhost:9009/examination/view", sessionName);
+  getAllExamination(dto: ExaminationDto) {
+    const url = `http://localhost:9009/examination/view`;
+    return this.http.post(url, dto);
   }
 
   findDistinctSubjectsByClass(examDto: ExaminationDto) {
@@ -339,8 +339,8 @@ export class CampusService {
     return this.http.post(urlPath, formData);
   }
 
-  getAllSchedule() {
-    return this.http.get("http://localhost:9009/exam-date-sheet/view");
+  getAllSchedule(dto: ExaminationDto) {
+    return this.http.post("http://localhost:9009/exam-date-sheet/view", dto);
   }
 
   createPrivilege(privilegedto: Privilege) {

@@ -3,6 +3,7 @@ package com.vivatechrnd.sms.Controller;
 import com.vivatechrnd.sms.Dto.ExaminationDto;
 import com.vivatechrnd.sms.Dto.SubjectsDto;
 import com.vivatechrnd.sms.Entities.AssignSubjectsTeacher;
+import com.vivatechrnd.sms.Entities.ExamDateSheet;
 import com.vivatechrnd.sms.Entities.Examination;
 import com.vivatechrnd.sms.Entities.Teacher;
 import com.vivatechrnd.sms.Repository.*;
@@ -80,17 +81,39 @@ public class ExaminationController {
     }
 
     @RequestMapping(value = "/view", method = RequestMethod.POST)
-    public List<ExaminationDto> getAllExamination(@RequestBody String sessionName){
+    public List<ExaminationDto> getAllExamination(@RequestBody ExaminationDto dto){
         List<ExaminationDto> examinationDtoList = new ArrayList<>();
-        List<Examination> examinationList = examinationRepository.findBySessionName(sessionName);
+        List<Examination> examinationList = filteredExaminationList(dto);
         examinationList.forEach(ele -> examinationDtoList.add(utilityService.convertExaminationEntityToDto(ele)));
         return examinationDtoList;
     }
 
+    @Autowired
+    private ExamDateSheetRepository examDateSheetRepository;
+
     @RequestMapping(value = "/find-exam-and-subject", method = RequestMethod.POST)
     public ExaminationDto getSubjectAndExamData(@RequestBody ExaminationDto examDto){
-        List<Examination> examinations = filteredExaminationList(examDto);
         List<SubjectsDto> subjectsDtoList = new ArrayList<>();
+        List<Examination> examinations = filteredExaminationList(examDto);
+        if (examinations.size() > 0){
+            List<ExamDateSheet> dateSheetList = examDateSheetRepository.findByExamination(examinations.get(0));
+            if (dateSheetList.size() > 0){
+                dateSheetList.forEach(ele -> {
+                    SubjectsDto dto = new SubjectsDto();
+                    dto.setId(ele.getSubjects().getId());
+                    dto.setSubjectCode(ele.getSubjects().getSubjectCode());
+                    dto.setSubjectName(ele.getSubjects().getSubjectName());
+                    dto.setSubjectExamDate(ele.getExamDate());
+                    subjectsDtoList.add(dto);
+                });
+                ExaminationDto examinationDto = new ExaminationDto();
+                examinationDto.setId(examinations.get(0).getId());
+                examinationDto.setExamStartDate(examinations.get(0).getExamStartDate());
+                examinationDto.setExamEndDate(examinations.get(0).getExamEndDate());
+                examinationDto.setSubjectsDtoList(subjectsDtoList);
+                return examinationDto;
+            }
+        }
         List<Object[]> distinctSubjects = assignSubjectsTeacherRepository.findDistinctSubject(examDto.getClassId());
         for (int i = 0; i < distinctSubjects.size(); i++) {
             Object[] obj = distinctSubjects.get(i);

@@ -15,12 +15,15 @@ export class ExaminationComponent implements OnInit {
   constructor(private modalService: NgbModal, private service: CampusService, private fb: FormBuilder) { }
 
   closeResult: string;
+  data: any;
 
   ngOnInit(): void {
     this.initializeCreateexamForm();
     this.initializeFilterDatesheetForm();
     this.initializeFilterExamination();
     this.initializeCreateDateForm();
+    this.initializeExamFilterModel();
+    this.getAllSession();
     this.getAllSchedule();
   }
 
@@ -30,7 +33,7 @@ export class ExaminationComponent implements OnInit {
   createExamDateSheetForm: FormGroup;
   initializeCreateexamForm(){
     this.createExaminationForm = new FormGroup({
-      'sessionname': new FormControl(null, Validators.required),
+      'sessionname': new FormControl("", Validators.required),
       'examname': new FormControl(null, Validators.required),
       'classid': new FormControl(null, Validators.required),
       'examstartdate': new FormControl(null, Validators.required),
@@ -38,6 +41,10 @@ export class ExaminationComponent implements OnInit {
       'examtype': new FormControl(null, Validators.required)
     });
   }
+
+  get dclassname() { return this.filterExamDateSheetForm.get('dclassname') }
+  get dsessionname() { return this.filterExamDateSheetForm.get('dsessionname') }
+  get dexamname() { return this.filterExamDateSheetForm.get('dexamname') }
 
   initializeFilterDatesheetForm(){
     this.filterExamDateSheetForm = new FormGroup({
@@ -49,7 +56,8 @@ export class ExaminationComponent implements OnInit {
 
   initializeFilterExamination(){
     this.filterExaminationBySession = new FormGroup({
-      'sessionid': new FormControl('')
+      'sessionid': new FormControl(''),
+      'className': new FormControl(null)
     });
   }
 
@@ -73,12 +81,17 @@ export class ExaminationComponent implements OnInit {
     return this.fb.group({
       subjectCode: [item.subjectCode, Validators.required],
       subjectName: [item.subjectName, Validators.required],
-      subjectExamDate: ['', Validators.required]
+      subjectExamDate: [item.subjectExamDate? new Date(item.subjectExamDate).toISOString().split('T')[0] : '', Validators.required]
     });
   }
 
   addNewField(item:any){
     this.subjectarray.push(this.initializeSubjectArray(item));
+  }
+
+  removeControl(index: number){
+    this.subjectarray.removeAt(index);
+    
   }
 
   get subjectarray() {
@@ -87,7 +100,7 @@ export class ExaminationComponent implements OnInit {
 
   setDefaulltValue(){
     this.createExaminationForm.patchValue({
-      sessionname: null,
+      sessionname: "",
       examname: null,
       classid: "",
       examstartdate: new Date().toISOString().split('T')[0],
@@ -123,6 +136,7 @@ export class ExaminationComponent implements OnInit {
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
+    this.subjectarray.clear();
   }
 
   private getDismissReason(reason: any): string {
@@ -173,16 +187,24 @@ export class ExaminationComponent implements OnInit {
 
   examinationList: ExaminationDto[];
   viewExaminationList(){
-    let response = this.service.getAllExamination(this.filterExaminationBySession.value.sessionid);
+    let dto: ExaminationDto = {
+      sessionName: this.filterExamDateSheetForm.value.dsessionname,
+      classId: this.filterExamDateSheetForm.value.dclassname
+    }
+    let response = this.service.getAllExamination(dto);
     response.subscribe((data:any) => {
       this.examinationList = data;
     });
   }
 
   
-  searchExamBySession(){
+  searchExamBySession(sessionName: string, className: string){
     console.log("Session Name: ", this.filterExamDateSheetForm.value.dsessionname);
-    let response = this.service.getAllExamination(this.filterExamDateSheetForm.value.dsessionname);
+    let dto: ExaminationDto = {
+      sessionName: sessionName,
+      classId: className
+    }
+    let response = this.service.getAllExamination(dto);
     response.subscribe((data:any) => {
       this.examinationList = data;
     });
@@ -248,9 +270,15 @@ export class ExaminationComponent implements OnInit {
 
   examDateSheetList: any[];
   getAllSchedule(){
-    let response = this.service.getAllSchedule();
+    let dto: ExaminationDto = {
+      sessionName: this.filterExaminationForm.value.fsessionname,
+      classId: this.filterExaminationForm.value.fclassname,
+      examName: this.filterExaminationForm.value.fexamname
+    }
+    let response = this.service.getAllSchedule(dto);
     response.subscribe((data:any) => {
       this.examDateSheetList = data;
+      this.modalService.dismissAll();
       console.log(data);
     });
   }
@@ -290,6 +318,34 @@ export class ExaminationComponent implements OnInit {
       } else {
         Swal.fire(data.result, data.message, 'info');
       }
+    });
+  }
+
+  filterExaminationForm: FormGroup;
+
+  get fclassname() { return this.filterExaminationForm.get('fclassname') }
+  get fsessionname() { return this.filterExaminationForm.get('fsessionname') }
+  get fexamname() { return this.filterExaminationForm.get('fexamname') }
+
+  initializeExamFilterModel(){
+    this.filterExaminationForm = new FormGroup({
+      'fsessionname': new FormControl(""),
+      'fclassname': new FormControl(""),
+      'fexamname': new FormControl("")
+    });
+  }
+
+  openFilterModel(createContenet: any) {
+    this.filterExaminationForm.reset();
+    this.initializeExamFilterModel();
+    this.getClassList();
+    this.modalService.open(createContenet, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg', centered: true, animation: true
+    }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
 

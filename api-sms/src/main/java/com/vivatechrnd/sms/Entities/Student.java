@@ -44,4 +44,8 @@ public class Student {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudentDocuments> documents = new ArrayList<>();
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "student_current_session_id")
+    private SchoolSession studentCurrentSession;
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -105,6 +106,7 @@ public class StudentMarkController {
         return null;
     }
 
+    @Transactional
     @RequestMapping(value = "/student-grade", method = RequestMethod.POST)
     public List<StudentGradeDto> getStudentGrades(@RequestBody StudentMarkDto dto){
         List<StudentGradeDto> dtoList = new ArrayList<>();
@@ -276,11 +278,11 @@ public class StudentMarkController {
             parameterMap.put("studentName", profileNamePattern);
         }
         if (!StringUtils.isEmpty(dto.getExamName())){
-            Examination examination = examinationRepository.findBySessionNameAndExamName(dto.getSessionName(), dto.getExamName());
+            List<Examination> examination = examinationRepository.findBySessionNameAndExamName(dto.getSessionName(), dto.getExamName());
             Join<StudentMarks, Examination> examinationJoin = root.join("examination");
             ParameterExpression<Integer> p = criteriaBuilder.parameter(Integer.class, "examinationId");
             predicateList.add(criteriaBuilder.equal(examinationJoin.get("id"), p));
-            parameterMap.put("examinationId", examination.getId());
+            parameterMap.put("examinationId", examination.get(0).getId());
         }
 
         if (!StringUtils.isEmpty(dto.getSubjectId())){

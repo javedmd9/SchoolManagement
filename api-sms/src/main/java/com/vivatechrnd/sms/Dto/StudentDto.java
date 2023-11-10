@@ -43,4 +43,6 @@ public class StudentDto {
     private String currentSession;
     private String rejectReason;
     private String email;
+    private String currentSessionName;
+    private Integer currentSessionId;
 }

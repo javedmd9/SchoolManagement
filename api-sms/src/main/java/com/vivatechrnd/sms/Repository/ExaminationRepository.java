@@ -12,9 +12,11 @@ public interface ExaminationRepository extends JpaRepository<Examination, Intege
     @Query(value = "select distinct session_name from examination", nativeQuery = true)
     List<Object[]> findDistinctBySessionName();
 
-    Examination findBySessionNameAndExamName(String sessionName, String examName);
+    List<Examination> findBySessionNameAndExamName(String sessionName, String examName);
 
     List<Examination> findByIdIn(List<Integer> examId);
 
     List<Examination> findBySessionNameAndClassId(String sessionName, String classId);
+
+    Examination findBySessionNameAndExamNameAndClassId(String sessionName, String examName, String classId);
 }

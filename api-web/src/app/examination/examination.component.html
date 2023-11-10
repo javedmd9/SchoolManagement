@@ -61,7 +61,7 @@
                             <th style="text-align: center;">Action</th>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let item of examDateSheetList">
+                            <tr *ngFor="let item of examDateSheetList | filter: data">
                                 <td style="text-align: center;">
                                     {{item.examination.examName}}
                                 </td>
@@ -135,10 +135,11 @@
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label for="inputState">Session Name</label>
-                        <div class="input-group input-group-alternative">
-                            <input class="form-control myformcontrol" placeholder="Session Name" type="text"
-                                id="sessionname" name="sessionname" formControlName="sessionname" />
-                        </div>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="sessionname"
+                            name="sessionname" formControlName="sessionname">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of sessionList" [value]="item">{{item}}</option>
+                        </select>
 
                     </div>
                     <div class="form-group col-md-4">
@@ -204,7 +205,7 @@
         <div class="card-footer">
             <form role="form" [formGroup]="filterExaminationBySession">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="inputState">Session</label>
                         <select class="form-control  myformcontrol" aria-label="Default select example" id="sessionid"
                             name="sessionid" formControlName="sessionid">
@@ -212,8 +213,16 @@
                             <option *ngFor="let item of sessionList" [value]="item">{{item}}</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <button type="button" class="btn btn-primary btn-round mt-4"
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Class</label>
+                        <div class="input-group input-group-alternative">
+                            <input class="form-control myformcontrol" placeholder="Class" type="number" id="className"
+                                name="className" formControlName="className" />
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary btn-round mt-4 float-right"
                             (click)="viewExaminationList()">View</button>
                     </div>
                 </div>
@@ -310,12 +319,20 @@
                         <label for="inputState">Session Name</label>
                         <div class="input-group input-group-alternative">
                             <select class="form-control  myformcontrol" aria-label="Default select example"
-                                id="dsessionname" name="dsessionname" formControlName="dsessionname"
-                                (change)="searchExamBySession()">
+                                id="dsessionname" name="dsessionname" formControlName="dsessionname">
                                 <option value="">Select</option>
                                 <option *ngFor="let item of sessionList" [value]="item">{{item}}</option>
                             </select>
                         </div>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Class</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="dclassname"
+                            name="dclassname" formControlName="dclassname" (change)="searchExamBySession(filterExamDateSheetForm.get('dsessionname').value, filterExamDateSheetForm.get('dclassname').value)">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of classList" [value]="item">{{item}}</option>
+                        </select>
 
                     </div>
                     <div class="form-group col-md-3">
@@ -325,15 +342,6 @@
                             <option value="">Select</option>
                             <option *ngFor="let item of examinationList" [value]="item.examName">{{item.examName}}
                             </option>
-                        </select>
-
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="inputState">Class</label>
-                        <select class="form-control  myformcontrol" aria-label="Default select example" id="dclassname"
-                            name="dclassname" formControlName="dclassname">
-                            <option value="">Select</option>
-                            <option *ngFor="let item of classList" [value]="item">{{item}}</option>
                         </select>
 
                     </div>
@@ -371,7 +379,7 @@
                     <div class="row mt-1"
                         *ngFor="let item of createExamDateSheetForm.get('subjectarrayform')['controls']; index as i"
                         [formGroupName]="i">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="inputState">Subject Code</label>
                             <input class="form-control myformcontrol" type="text" placeholder="" id="subjectCode"
                                 name="subjectCode" formControlName="subjectCode">
@@ -386,6 +394,11 @@
                             <input class="form-control myformcontrol" type="date" placeholder="" id="subjectExamDate"
                                 name="subjectExamDate" formControlName="subjectExamDate" (change)="changeDate(i)">
                         </div>
+                        <div class="form-group col-md-1 mt-3">
+                            <button type="button" id="delControl" name="delControl" data-original-title="Remove"
+                            class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral"
+                            (click)="removeControl(i)"><i class="now-ui-icons files_box text-info"></i></button>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-12" style="text-align: right;">
@@ -399,3 +412,62 @@
 
 </ng-template>
 <!-- add datesheet model end -->
+
+<!-- filter model starts  -->
+<ng-template #filterModal let-modal>
+
+    <div class="modal-content">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 pr-1" style="text-align: left;">
+                    <h5 class="title" style="font-weight: bold;">Filter Certificate</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-body gradientModelBackground" >
+            <form role="form" [formGroup]="filterExaminationForm">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Session Name</label>
+                        <div class="input-group input-group-alternative">
+                            <select class="form-control  myformcontrol" aria-label="Default select example"
+                                id="fsessionname" name="fsessionname" formControlName="fsessionname">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of sessionList" [value]="item">{{item}}</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Class</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="fclassname"
+                            name="fclassname" formControlName="fclassname" (change)="searchExamBySession(filterExaminationForm.get('fsessionname').value, filterExaminationForm.get('fclassname').value)">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of classList" [value]="item">{{item}}</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputState">Exam Name</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="fexamname"
+                            name="fexamname" formControlName="fexamname">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of examinationList" [value]="item.examName">{{item.examName}}
+                            </option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary btn-round mt-4"
+                                (click)="getAllSchedule()">View</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</ng-template>
+<!-- filter model end -->

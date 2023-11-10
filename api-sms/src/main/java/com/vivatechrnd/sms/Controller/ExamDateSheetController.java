@@ -2,17 +2,22 @@ package com.vivatechrnd.sms.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vivatechrnd.sms.Dto.ExamDateSheetDto;
+import com.vivatechrnd.sms.Dto.ExaminationDto;
 import com.vivatechrnd.sms.Dto.SubjectsDto;
 import com.vivatechrnd.sms.Entities.*;
 import com.vivatechrnd.sms.Repository.*;
+import com.vivatechrnd.sms.Services.ExaminationService;
 import com.vivatechrnd.sms.utility.Response;
 import com.vivatechrnd.sms.utility.UtilityService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -49,16 +54,25 @@ public class ExamDateSheetController {
     @Autowired
     private AssignSubjectsTeacherRepository assignSubjectsTeacherRepository;
 
+    @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    private ExaminationService examinationService;
+
+    @Transactional(rollbackFor = {IOException.class, RuntimeException.class})
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Response createDateSheet(@RequestPart String dto){
         Response response = new Response();
         try {
             ExamDateSheetDto examDateSheetDto = objectMapper.readValue(dto, ExamDateSheetDto.class);
             Examination examination = examinationRepository.findById(examDateSheetDto.getExamId()).get();
-            SubjectsDto[] subjectsDto = utilityService.getJsonToDto(examDateSheetDto.getCourseExamData(), SubjectsDto[].class);
+            SubjectsDto[] subjectsDto = UtilityService.getJsonToDto(examDateSheetDto.getCourseExamData(), SubjectsDto[].class);
             for (SubjectsDto subject: subjectsDto){
                 ExamDateSheet dateSheet = new ExamDateSheet();
                 Subjects subjectCode = subjectRepository.findBySubjectCode(subject.getSubjectCode());
+                ExamDateSheet examDateSheet = examDateSheetRepository.findBySubjectsAndExamination(subjectCode, examination);
+                if (examDateSheet != null) throw new RuntimeException("Date sheet already created");
                 dateSheet.setSubjects(subjectCode);
                 dateSheet.setExamination(examination);
                 dateSheet.setExamDate(subject.getSubjectExamDate());
@@ -89,10 +103,13 @@ public class ExamDateSheetController {
         }
     }
 
-    @RequestMapping(value = "/view", method = RequestMethod.GET)
-    public List<ExamDateSheet> getAllSchedule(){
+    @RequestMapping(value = "/view", method = RequestMethod.POST)
+    public List<ExamDateSheet> getAllSchedule(@RequestBody ExaminationDto dto) {
         List<ExamDateSheet> examDateSheets = examDateSheetRepository.findAll();
-        return examDateSheets;
+        List<Examination> examinations = examinationService.filteredExaminationList(dto);
+        return examDateSheets.stream()
+                .filter(examDateSheet -> examinations.contains(examDateSheet.getExamination()))
+                .collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
