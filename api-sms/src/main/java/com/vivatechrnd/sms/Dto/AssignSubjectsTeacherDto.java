@@ -18,7 +18,7 @@ public class AssignSubjectsTeacherDto {
     private TeacherDto teacherDto;
     private SubjectsDto subjectsDto;
     private String sessionName;
-
+    private int pageNumber;
     private String dayName;
     private Integer periodNo;
 }

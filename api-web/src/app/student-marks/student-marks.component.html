@@ -127,36 +127,38 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="form-group col-md-4">
-                    <label for="inputState">Session Name</label>
-                    <select class="form-control  myformcontrol" aria-label="Default select example" id="sessionname"
-                        name="sessionname" (change)="searchExamBySession($event)">
-                        <option value="">Select</option>
-                        <option *ngFor="let item of sessionList" [value]="item.sessionName">{{item.sessionName}}</option>
-                    </select>
-
+            <form role="form" [formGroup]="filterExamDateSheetForm">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Session Name</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="sessionname"
+                            name="sessionname" formControlName="dsessionname">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of sessionList" [value]="item.sessionName">{{item.sessionName}}</option>
+                        </select>
+    
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Class</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="classname"
+                            name="classname" formControlName="dclassname" (change)="searchExamBySession(filterExamDateSheetForm.get('dsessionname').value, filterExamDateSheetForm.get('dclassname').value)">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of assignClassList" [value]="item.classId + ' ' + item.sectionId">{{item.classId + ' ' + item.sectionId}}</option>
+                        </select>
+    
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Exam Name</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="examname"
+                            name="examname" formControlName="dexamname">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of examinationList" [value]="item.examName">{{item.examName}}</option>
+                        </select>
+    
+                    </div>
+                    
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="inputState">Exam Name</label>
-                    <select class="form-control  myformcontrol" aria-label="Default select example" id="examname"
-                        name="examname">
-                        <option value="">Select</option>
-                        <option *ngFor="let item of examinationList" [value]="item.examName">{{item.examName}}</option>
-                    </select>
-
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputState">Class</label>
-                    <select class="form-control  myformcontrol" aria-label="Default select example" id="classname"
-                        name="classname">
-                        <option value="">Select</option>
-                        <option *ngFor="let item of assignClassList" [value]="item.classId + ' ' + item.sectionId">{{item.classId + ' ' + item.sectionId}}</option>
-                    </select>
-
-                </div>
-                
-            </div>
+            </form>
             <div class="row">
                 <div class="form-group col-md-4">
                     <label for="inputState">Subject</label>
@@ -266,9 +268,30 @@
                         <div class="form-group">
                             <label class="text-white">Session Name</label>
                             <select class="form-control  myformcontrol text-danger" aria-label="Default select example"
-                            (change)="searchExamBySession($event)" id="fsessionname" name="fsessionname" formControlName="fsessionname">
+                            id="fsessionname" name="fsessionname" formControlName="fsessionname">
                                 <option value="">Select</option>
                                 <option *ngFor="let item of sessionList" value="{{item.sessionName}}">{{item.sessionName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Class</label>
+                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example" id="fclassname"
+                            (change)="searchExamBySession(filterStudentMarksForm.get('fsessionname').value, filterStudentMarksForm.get('fclassname').value)" name="fclassname" formControlName="fclassname">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of assignClassList" [value]="item.classId + ' ' + item.sectionId">{{item.classId + ' ' +
+                                    item.sectionId}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 pr-1">
+                        <div class="form-group">
+                            <label class="text-white">Subject</label>
+                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example"
+                                id="fsubjectname" name="fsubjectname" formControlName="fsubjectname" (change)="getTeacherListByClass()">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of uniqueSubjectArray" [value]="item">{{item}}</option>
                             </select>
                         </div>
                     </div>
@@ -282,17 +305,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-3 pr-1">
-                        <div class="form-group">
-                            <label class="text-white">Class</label>
-                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example" id="fclassname"
-                                name="fclassname" formControlName="fclassname">
-                                <option value="">Select</option>
-                                <option *ngFor="let item of assignClassList" [value]="item.classId + ' ' + item.sectionId">{{item.classId + ' ' +
-                                    item.sectionId}}</option>
-                            </select>
-                        </div>
-                    </div>
                     <div class="col-sm-3 pr-1" *ngIf="forAdminLoginOnly">
                         <div class="form-group">
                             <label class="text-white">Teacher Name</label>
@@ -303,9 +315,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-
                     <div class="col-md-3 pr-1">
                         <div class="form-group">
                             <label class="text-white">Student Name</label>
@@ -315,16 +324,6 @@
                             <datalist id="codes">
                                 <option *ngFor="let c of studentSearch" [value]="c"></option>
                             </datalist>
-                        </div>
-                    </div>
-                    <div class="col-md-3 pr-1">
-                        <div class="form-group">
-                            <label class="text-white">Subject</label>
-                            <select class="form-control  myformcontrol text-danger" aria-label="Default select example"
-                                id="fsubjectname" name="fsubjectname" formControlName="fsubjectname">
-                                <option value="">Select</option>
-                                <option *ngFor="let item of uniqueSubjectArray" [value]="item">{{item}}</option>
-                            </select>
                         </div>
                     </div>
                 </div>

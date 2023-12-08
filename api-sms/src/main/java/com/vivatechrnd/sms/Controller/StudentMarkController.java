@@ -7,6 +7,7 @@ import com.vivatechrnd.sms.PaginationDto.StudentMarksDtoPagination;
 import com.vivatechrnd.sms.Repository.*;
 import com.vivatechrnd.sms.utility.Response;
 import com.vivatechrnd.sms.utility.UtilityService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import java.util.stream.IntStream;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value="/student-marks")
+@Slf4j
 public class StudentMarkController {
 
     @Autowired
@@ -120,6 +122,7 @@ public class StudentMarkController {
             int pageNumber = 0;
             PageRequest pageRequest = new PageRequest(pageNumber, 15);
             Page<StudentMarks> filteredMarks = getFilteredMarks(markDto, pageRequest);
+            if (filteredMarks.getContent().stream().anyMatch(ele -> ele.getObtainedMarks() == null)) continue;
             int fullMarks = filteredMarks.getContent().stream().mapToInt(StudentMarks::getFullMarks).sum();
             int obtainedMarks = filteredMarks.getContent().stream().mapToInt(StudentMarks::getObtainedMarks).sum();
             double percentage = ((double) obtainedMarks / (double) fullMarks)*100;
@@ -159,6 +162,7 @@ public class StudentMarkController {
 
     @RequestMapping(value = "/view", method = RequestMethod.POST)
     public StudentMarksDtoPagination getStudentMarksList(@RequestBody StudentMarkDto marksDto){
+        log.info("Filter Request: {}", marksDto);
         StudentMarksDtoPagination response = new StudentMarksDtoPagination();
         int pageNumber = (marksDto.getPageNum() != null && marksDto.getPageNum() != 0)? marksDto.getPageNum() : 0;
         PageRequest pageRequest = new PageRequest(pageNumber, 15);
@@ -234,12 +238,61 @@ public class StudentMarkController {
         return dtoList;
     }
 
+    public List<StudentMarks> getFilteredMarks2(StudentMarkDto dto){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<StudentMarks> query = criteriaBuilder.createQuery(StudentMarks.class);
+        Root<StudentMarks> root = query.from(StudentMarks.class);
+        query.select(root);
+        HashMap<String, Object> parameterMap = new HashMap<>();
+        List<Predicate> predicateList = getPredicates(dto, criteriaBuilder, root, parameterMap);
+        if (predicateList.size() == 0) {
+            query.select(root);
+        } else {
+            if (predicateList.size() == 1) {
+                query.where(predicateList.get(0));
+            } else {
+                query.where(criteriaBuilder.and(predicateList.toArray(new Predicate[0])));
+            }
+        }
+        TypedQuery<StudentMarks> tq = entityManager.createQuery(query);
+
+        for (String key : parameterMap.keySet()) {
+            tq.setParameter(key, parameterMap.get(key));
+        }
+
+        return tq.getResultList();
+    }
+
     public Page<StudentMarks> getFilteredMarks(StudentMarkDto dto, Pageable pageable){
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<StudentMarks> query = criteriaBuilder.createQuery(StudentMarks.class);
         Root<StudentMarks> root = query.from(StudentMarks.class);
         query.select(root);
         HashMap<String, Object> parameterMap = new HashMap<>();
+        List<Predicate> predicateList = getPredicates(dto, criteriaBuilder, root, parameterMap);
+        if (predicateList.size() == 0) {
+            query.select(root);
+        } else {
+            if (predicateList.size() == 1) {
+                query.where(predicateList.get(0));
+            } else {
+                query.where(criteriaBuilder.and(predicateList.toArray(new Predicate[0])));
+            }
+        }
+        TypedQuery<StudentMarks> tq = entityManager.createQuery(query);
+
+        for (String key : parameterMap.keySet()) {
+            tq.setParameter(key, parameterMap.get(key));
+        }
+
+        List<StudentMarks> resultList = tq.getResultList();
+        int total = resultList.size();
+        Page<StudentMarks> pagedMarks = new PageImpl<StudentMarks>(resultList, pageable, total);
+
+        return pagedMarks;
+    }
+
+    private List<Predicate> getPredicates(StudentMarkDto dto, CriteriaBuilder criteriaBuilder, Root<StudentMarks> root, HashMap<String, Object> parameterMap) {
         List<Predicate> predicateList = new ArrayList<Predicate>();
         if (!StringUtils.isEmpty(dto.getClassId())) {
             ParameterExpression<String> p = criteriaBuilder.parameter(String.class, "classId");
@@ -292,28 +345,6 @@ public class StudentMarkController {
             predicateList.add(criteriaBuilder.equal(subjectsJoin.get("id"), p));
             parameterMap.put("subjectId", subjects.getId());
         }
-        if (predicateList.size() == 0) {
-            query.select(root);
-        } else {
-            if (predicateList.size() == 1) {
-                query.where(predicateList.get(0));
-            } else {
-                query.where(criteriaBuilder.and(predicateList.toArray(new Predicate[0])));
-            }
-        }
-        TypedQuery<StudentMarks> tq = entityManager.createQuery(query);
-
-        for (String key : parameterMap.keySet()) {
-            tq.setParameter(key, parameterMap.get(key));
-        }
-
-        List<StudentMarks> resultList = tq.getResultList();
-        int total = resultList.size();
-        tq.setFirstResult((int) pageable.getOffset());
-        tq.setMaxResults(pageable.getPageSize());
-        resultList = tq.getResultList();
-        Page<StudentMarks> pagedMarks = new PageImpl<StudentMarks>(resultList, pageable, total);
-
-        return pagedMarks;
+        return predicateList;
     }
 }

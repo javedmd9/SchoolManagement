@@ -7,7 +7,7 @@ import { NgxCaptureService } from 'ngx-capture';
 import { tap } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { CampusService } from '../campus.service';
-import { AssignSubjectsTeacherDto, ExaminationDto, LeaveRequestDto, ReportCardDto, StudentDocumentDto, StudentDto, StudentGradeDto, StudentMarkDto, TeacherDto, TimeTableReport } from '../teachers/teacher.model';
+import { AssignSubjectsTeacherDto, ExamScheduleDto, ExaminationDto, LeaveRequestDto, ReportCardDto, StudentDocumentDto, StudentDto, StudentGradeDto, StudentMarkDto, TeacherDto, TimeTableReport } from '../teachers/teacher.model';
 
 @Component({
   selector: 'app-student-profile',
@@ -50,7 +50,20 @@ export class StudentProfileComponent implements OnInit {
       this.findAllExamByClass();
       this.findTimeTableByClass();
       this.findStudentGrade(this.studentData);
+      this.findClassExamSchedule(this.studentData);
     });
+  }
+
+
+  examScheduleResult: ExamScheduleDto;
+  findClassExamSchedule(studenDto: StudentDto){
+
+    let response = this.studentService.getExamScheduleByClass(studenDto.classId);
+    response.subscribe((data:any) => {
+      this.examScheduleResult = data;
+      console.log("Subjects: ", this.examScheduleResult);
+    });
+
   }
 
   documentData: any;

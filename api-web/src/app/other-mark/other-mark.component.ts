@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Jsonp } from '@angular/http';
 import { ModalDismissReasons, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
@@ -24,6 +24,7 @@ export class OtherMarkComponent implements OnInit {
     this.initializeCreateStudentMarksForm();
     this.initializeStudentMarksArray(null);
     this.viewAllOtherMarksOfStudent();
+    this.initializeFilterDatesheetForm();
   }
 
   private findUserDtoByRole(userData: any) {
@@ -74,16 +75,28 @@ export class OtherMarkComponent implements OnInit {
     });
   }
 
-  sessionName: string;
-  searchExamBySession(event:any){
-    console.log("Session Name: ", event.target.value);
-    this.sessionName = event.target.value;
-    let response = this.service.getAllExamination(event.target.value);
+  get dclassname() { return this.filterExamDateSheetForm.get('dclassname') }
+  get dsessionname() { return this.filterExamDateSheetForm.get('dsessionname') }
+
+  filterExamDateSheetForm: FormGroup;
+  initializeFilterDatesheetForm(){
+    this.filterExamDateSheetForm = new FormGroup({
+      'dsessionname': new FormControl("", Validators.required),
+      'dclassname': new FormControl("", Validators.required),
+    });
+  }
+
+
+  searchExamBySession(sessionName?: string, className?: string){
+    console.log("Session Name: ", this.filterExamDateSheetForm.value.dsessionname);
+    let dto: ExaminationDto = {
+      sessionName: sessionName,
+      classId: className.split(" ")[0]
+    }
+    let response = this.service.getAllExamination(dto);
     response.subscribe((data:any) => {
-      this.examinationList = data;
-      if(this.examinationList.length <=0){
-        Swal.fire("Data not found");
-      }
+      let examList: ExaminationDto[] = data;
+      this.examinationList = examList.filter((ele:ExaminationDto) => ele.examType.toUpperCase() == "MINOR");
     });
   }
 

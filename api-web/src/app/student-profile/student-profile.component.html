@@ -166,6 +166,34 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-header">
+              <h5 class="title">Exam Schedule</h5>
+            </div>
+            <div class="card-body">
+              <table class="table table-responsive">
+                <thead>
+                  <tr id="custom-font-table">
+                    <th>Subject</th>
+                    <th *ngFor="let item of examScheduleResult?.examName">
+                        <p>{{item}}</p>
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="firstchildstyle">
+                  <tr *ngFor="let item of examScheduleResult?.examObject">
+                    <td *ngFor="let stats of item" style="padding-bottom: 0px;">
+                        <p>{{stats}}</p>
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
               <h5 class="title">Examination Result</h5>
             </div>
             <div class="card-body">

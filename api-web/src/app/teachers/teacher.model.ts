@@ -144,7 +144,7 @@ export class AssignSubjectsTeacherDto{
     teacherDto?: TeacherDto;
     subjectsDto?: SubjectDto;
     sessionName?: string;
-
+    pageNumber?: number;
     dayName?: string;
     periodNo?: number;
     constructor(){}
@@ -277,5 +277,11 @@ export class StudentGradeDto {
     percentage?: number;
     grade?: string;
     examName?: string;
+    constructor(){}
+}
+
+export class ExamScheduleDto {
+    examName: string[];
+    examObject: Object[];
     constructor(){}
 }

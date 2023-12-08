@@ -26,6 +26,7 @@ export class StudentMarksComponent implements OnInit {
     const userData = JSON.parse(localStorage.getItem("UserData"));
     this.findUserDtoByRole(userData);
     this.initializeCreateStudentMarksForm();
+    this.initializeFilterDatesheetForm();
     this.initializeFilterMarksModel();
     this.viewAllSavedMarks(userData);
     this.validationCheck(userData);
@@ -99,16 +100,31 @@ export class StudentMarksComponent implements OnInit {
     this.examId = Number(event.target.value);
   }
 
-  sessionName: string;
-  searchExamBySession(event:any){
-    console.log("Session Name: ", event.target.value);
-    this.sessionName = event.target.value;
-    let response = this.service.getAllExamination(event.target.value);
+  
+  get dclassname() { return this.filterExamDateSheetForm.get('dclassname') }
+  get dsessionname() { return this.filterExamDateSheetForm.get('dsessionname') }
+  get dexamname() { return this.filterExamDateSheetForm.get('dexamname') }
+
+  filterExamDateSheetForm: FormGroup;
+  initializeFilterDatesheetForm(){
+    this.filterExamDateSheetForm = new FormGroup({
+      'dsessionname': new FormControl("", Validators.required),
+      'dexamname': new FormControl("", Validators.required),
+      'dclassname': new FormControl("", Validators.required),
+    });
+  }
+
+
+  searchExamBySession(sessionName?: string, className?: string){
+    console.log("Session Name: ", this.filterExamDateSheetForm.value.dsessionname);
+    let dto: ExaminationDto = {
+      sessionName: sessionName,
+      classId: className.split(" ")[0]
+    }
+    let response = this.service.getAllExamination(dto);
     response.subscribe((data:any) => {
       this.examinationList = data;
-      if(this.examinationList.length <=0){
-        Swal.fire("Data not found");
-      }
+      this.displayAllSubject(className.split(" ")[0]);
     });
   }
 
@@ -122,7 +138,8 @@ export class StudentMarksComponent implements OnInit {
     }
     let response = this.service.getAssignSubjectCustomSearch(assignDto);
     response.subscribe((data:any) => {
-      this.assignClassList = data;
+      this.assignClassList = data.content;
+      console.log("Logged in user class: ", this.assignClassList);
       let subjectArray: string[] = new Array();
       this.assignClassList.forEach(ele => subjectArray.push(ele.subjectsDto.subjectCode));
       this.uniqueSubjectArray = Array.from(new Set(subjectArray));
@@ -358,15 +375,7 @@ export class StudentMarksComponent implements OnInit {
 
   requestedPage: number = 0;
   filterStatus: boolean = false;
-  submitFilterRequest(){
-    this.markTeacherLogin = false;
-    let pageRequest: number;
-    console.log("Requested Page in filter: ", this.requestPage);
-    if(this.requestPage != 0){
-      pageRequest = this.requestPage;
-    } else {
-      pageRequest = 0;
-    }
+  submitFilterRequest(pageNum: number){
     let strClass = this.filterStudentMarksForm.value.fclassname;
     let splittedClass = strClass.split(" ");
     let marksFilter: StudentMarkDto = {
@@ -377,9 +386,8 @@ export class StudentMarksComponent implements OnInit {
       classId: splittedClass[0],
       sectionId: splittedClass[1],
       studentName: this.filterStudentMarksForm.value.fstudentname,
-      pageNum: pageRequest
+      pageNum: pageNum
     }
-    console.table(marksFilter);
     this.viewAllRelatedMarks(marksFilter);
     this.modalService.dismissAll();
     this.filterStatus = true;
@@ -391,6 +399,7 @@ export class StudentMarksComponent implements OnInit {
     let marksDto: StudentMarkDto = new StudentMarkDto();
     if(userData.roles.name.includes("TEACHER")){
       this.markTeacherLogin = true;
+      console.log("Teacher login: ", this.markTeacherLogin);
       let pageRequest: number;
       console.log("Requested Page by teacher: ", this.requestedPage);
       if(this.requestedPage != 0){
@@ -408,7 +417,7 @@ export class StudentMarksComponent implements OnInit {
       });
       
     } else {
-      console.log("Calling Admin section marks");
+      console.log("Teacher Login: ", this.markTeacherLogin);
       this.viewAllRelatedMarks(marksDto);
     }
   }
@@ -418,9 +427,9 @@ export class StudentMarksComponent implements OnInit {
     console.log("Filter request: ", marksDto);
     let response = this.service.viewAllSavedMarksRecord(marksDto);
     response.subscribe((data: any) => {
-      this.filteredMarks = data["content"];
+      this.filteredMarks = data["content"] ? data["content"] : [];
       this.pages2 = data["totalElements"];
-      this.p = data["number"] +1;
+      this.p = data["number"];
       console.log("Filtered Data: ",data);
     });
     let response2 = this.service.getAllFilteredBulkStudentMarks(marksDto);
@@ -441,11 +450,12 @@ export class StudentMarksComponent implements OnInit {
 
   pageChangeEvent(event) {
     this.p = event;
+    console.log("Selected Page: ", event);
     if (this.filterStatus) {
       this.requestPage = event -1;
       this.markTeacherLogin = false;
       this.requestedPage = 0;
-      this.submitFilterRequest();
+      this.submitFilterRequest(event);
     } else if(this.markTeacherLogin){
       this.requestedPage = event -1
       let user = JSON.parse(localStorage.getItem("UserData"));
@@ -669,5 +679,47 @@ export class StudentMarksComponent implements OnInit {
     });
     
   }
+
+  customSubjectList: AssignSubjectsTeacherDto[] = [];
+  displayAllSubject(classes: string){
+    let classId = classes.split(" ")[0];
+    let response = this.service.getSubjectListByClass(classId);
+    response.subscribe((data:any) => {
+      console.log("Subject list: ", data);
+      this.uniqueSubjectArray = [];
+      data.map((ele:any) => this.uniqueSubjectArray.push(ele.subjectCode));
+    });
+  }
+
+  getTeacherListByClass(){
+    if(this.markTeacherLogin) return;
+    let subjectDto: SubjectDto = {
+      subjectCode: this.filterStudentMarksForm.value.fsubjectname
+    }
+    let dto: AssignSubjectsTeacherDto = {
+      sessionName: this.filterStudentMarksForm.value.fsessionname,
+      classId: this.filterStudentMarksForm.value.fclassname.split(" ")[0],
+      sectionId: this.filterStudentMarksForm.value.fclassname.split(" ")[1],
+      subjectsDto: subjectDto
+    }
+    let response = this.service.getAssignSubjectCustomSearch(dto);
+    response.subscribe((data:any) => {
+      console.log("Getting teachet list for admin: ", data);
+      let dtoList: TeacherDto[] = [];
+      if(data.content){
+        data.content.map((ele:any) => {
+          let teacher: TeacherDto = {
+            id: ele.teacherDto.id,
+            teacherCode: ele.teacherDto.teacherCode,
+            teacherName: ele.teacherDto.teacherName
+          }
+          dtoList.push(teacher);
+        });
+        this.teachersList = dtoList;
+      }
+    });
+  }
+
+  
 
 }

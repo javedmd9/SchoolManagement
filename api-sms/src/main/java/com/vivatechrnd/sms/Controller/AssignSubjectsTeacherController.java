@@ -1,11 +1,10 @@
 package com.vivatechrnd.sms.Controller;
 
 import com.vivatechrnd.sms.Dto.AssignSubjectsTeacherDto;
-import com.vivatechrnd.sms.Entities.AssignSubjectsTeacher;
-import com.vivatechrnd.sms.Entities.Attendance;
-import com.vivatechrnd.sms.Entities.Subjects;
-import com.vivatechrnd.sms.Entities.Teacher;
+import com.vivatechrnd.sms.Dto.StudentMarkDto;
+import com.vivatechrnd.sms.Entities.*;
 import com.vivatechrnd.sms.PaginationDto.AssignSubjectTeacherDtoPagination;
+import com.vivatechrnd.sms.PaginationDto.StudentMarksDtoPagination;
 import com.vivatechrnd.sms.Repository.AssignSubjectsTeacherRepository;
 import com.vivatechrnd.sms.Repository.SubjectRepository;
 import com.vivatechrnd.sms.Repository.TeacherRepository;
@@ -14,6 +13,7 @@ import com.vivatechrnd.sms.utility.UtilityService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -127,8 +127,8 @@ public class AssignSubjectsTeacherController {
         return classes;
     }
 
-    @RequestMapping(value = "/find-distinct-subjects-by-class", method = RequestMethod.POST)
-    public List<AssignSubjectsTeacherDto> getAllSubjectsByClass(@RequestBody String classId){
+    @RequestMapping(value = "/find-distinct-subjects-by-class/{classId}", method = RequestMethod.GET)
+    public List<AssignSubjectsTeacherDto> getAllSubjectsByClass(@PathVariable String classId){
         List<Object[]> distinctSubjects = assignSubjectsTeacherRepository.findDistinctSubject(classId);
         List<AssignSubjectsTeacherDto> dtoList = new ArrayList<>();
         for (int i = 0; i < distinctSubjects.size(); i++) {
@@ -148,6 +148,34 @@ public class AssignSubjectsTeacherController {
         List<AssignSubjectsTeacherDto> dtoList = new ArrayList<>();
         filteredList.forEach(ele -> dtoList.add(utilityService.convertAssignSubjectEntityToDto(ele)));
         return dtoList;
+    }
+
+    @RequestMapping(value = "/filtered-subject-teacher", method = RequestMethod.POST)
+    public AssignSubjectTeacherDtoPagination getAllFilteredData(@RequestBody AssignSubjectsTeacherDto dto){
+        AssignSubjectTeacherDtoPagination response = new AssignSubjectTeacherDtoPagination();
+        int pageNumber = Math.max(dto.getPageNumber(), 1);
+        int pageSize = 10;
+        List<AssignSubjectsTeacher> filteredList = getFilteredList(dto);
+        int start = (pageNumber - 1) * pageSize;
+        int end = Math.min(start + pageSize, filteredList.size());
+        List<AssignSubjectsTeacher> pageContent = filteredList.subList(start, end);
+        Page<AssignSubjectsTeacher> assignSubjectsTeachers = new PageImpl<>(pageContent, PageRequest.of(pageNumber - 1, pageSize), filteredList.size());
+        return convertDtoToPagination(assignSubjectsTeachers, pageContent);
+    }
+
+    private AssignSubjectTeacherDtoPagination convertDtoToPagination(Page<AssignSubjectsTeacher> filteredResult, List<AssignSubjectsTeacher> subList) {
+        AssignSubjectTeacherDtoPagination response = new AssignSubjectTeacherDtoPagination();
+        List<AssignSubjectsTeacherDto> assignSubjectsTeachers = new ArrayList<>();
+        subList.forEach(ele -> assignSubjectsTeachers.add(utilityService.convertAssignSubjectEntityToDto(ele)));
+        response.setFirst(filteredResult.isFirst());
+        response.setLast(filteredResult.isLast());
+        response.setTotalPages(filteredResult.getTotalPages());
+        response.setTotalElements((int) filteredResult.getTotalElements());
+        response.setSize(filteredResult.getSize());
+        response.setNumber(filteredResult.getNumber());
+        response.setNumberOfElements(filteredResult.getNumberOfElements());
+        response.setContent(assignSubjectsTeachers);
+        return response;
     }
 
     public List<AssignSubjectsTeacher> getFilteredList(AssignSubjectsTeacherDto dto){
@@ -171,6 +199,20 @@ public class AssignSubjectsTeacherController {
             ParameterExpression<String> p = criteriaBuilder.parameter(String.class, "sessionName");
             predicateList.add((criteriaBuilder.equal(root.<String>get("sessionName"),p)));
             parameterMap.put("sessionName", dto.getSessionName());
+        }
+        if (dto.getSubjectId() != null){
+            Subjects subjects = subjectRepository.findById(dto.getSubjectId()).orElse(null);
+            Join<Attendance, Subjects> subjectsJoin = root.join("subjects");
+            ParameterExpression<Integer> p = criteriaBuilder.parameter(Integer.class, "subjectId");
+            predicateList.add(criteriaBuilder.equal(subjectsJoin.get("id"), p));
+            parameterMap.put("subjectId", subjects.getId());
+        }
+        if (dto.getSubjectsDto() != null){
+            Subjects subjects = subjectRepository.findBySubjectCode(dto.getSubjectsDto().getSubjectCode());
+            Join<Attendance, Subjects> subjectsJoin = root.join("subjects");
+            ParameterExpression<Integer> p = criteriaBuilder.parameter(Integer.class, "subjectId");
+            predicateList.add(criteriaBuilder.equal(subjectsJoin.get("id"), p));
+            parameterMap.put("subjectId", subjects.getId());
         }
         if (dto.getTeacherId() != null){
             Teacher teacher = teacherRepository.findById(dto.getTeacherId()).get();

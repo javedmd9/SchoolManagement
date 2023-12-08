@@ -11,9 +11,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.*;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -37,13 +39,18 @@ public class OtherMarksController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @SneakyThrows
+    @Transactional
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Response assignOtherMarksPt1(@RequestBody TempOtherMarkDto dto){
+    public Response assignOtherMarksPt1(@RequestBody TempOtherMarkDto dto) throws IOException {
         Response response = new Response();
-        Examination examination = examinationRepository.findById(dto.getExaminationId()).get();
+        Examination examination = examinationRepository.findById(dto.getExaminationId()).orElse(null);
+        if (examination == null) {
+            response.setResult("Failed");
+            response.setMessage("Examination not found");
+            return response;
+        }
         Subjects subjects = subjectRepository.findBySubjectCode(dto.getSubjectCode());
-        OtherMarksDto[] sMarks = utilityService.getJsonToDto(dto.getStudentData(), OtherMarksDto[].class);
+        OtherMarksDto[] sMarks = UtilityService.getJsonToDto(dto.getStudentData(), OtherMarksDto[].class);
         Student checkStudent = studentRepository.findByAdmissionNo(sMarks[0].getAdmissionNo());
         OtherMarks checkExistingStudentMark = otherMarkRepository.findByExaminationAndStudentAndSubjects(examination, checkStudent, subjects);
         if (checkExistingStudentMark != null){
@@ -84,7 +91,7 @@ public class OtherMarksController {
 
     @RequestMapping(value = "/view-marks-by-exam-list", method = RequestMethod.POST)
     public List<OtherMarksDto> viewMarksByExamListForPTMarksSubmit(@RequestBody OtherMarksDto dto){
-        Teacher teacher = teacherRepository.findById(dto.getSubmittedById()).get();
+        Teacher teacher = teacherRepository.findById(dto.getSubmittedById()).orElse(null);
         Subjects subjects = subjectRepository.findBySubjectCode(dto.getSubjectCode());
         List<Examination> examinationList = examinationRepository.findByIdIn(dto.getExamId());
         if (dto.getClassId().equals("9") || dto.getClassId().equals("10")){

@@ -80,41 +80,48 @@
             </div>
         </div>
         <div class="card-body">
+            <form role="form" [formGroup]="filterExamDateSheetForm">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Session Name</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="sessionname"
+                            name="sessionname" formControlName="dsessionname">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of sessionList" [value]="item.sessionName">{{item.sessionName}}</option>
+                        </select>
+        
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Class</label>
+                        <select class="form-control  myformcontrol" aria-label="Default select example" id="classId"
+                            name="classId" formControlName="dclassname"
+                            (change)="searchExamBySession(filterExamDateSheetForm.get('dsessionname').value, filterExamDateSheetForm.get('dclassname').value)">
+                            <option value="">Select</option>
+                            <option *ngFor="let item of assignClassList" [value]="item.classId + ' ' + item.sectionId">
+                                {{item.classId + ' ' + item.sectionId}}</option>
+                        </select>
+        
+                    </div>
+        
+                </div>
+            </form>
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label>Session Name</label>
-                    <select class="form-control  myformcontrol" aria-label="Default select example" id="sessionname" name="sessionname"
-                        (change)="searchExamBySession($event)">
-                        <option value="">Select</option>
-                        <option *ngFor="let item of sessionList" [value]="item.sessionName">{{item.sessionName}}</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-4">
-                    <label>Class Name</label>
-                    <select class="form-control  myformcontrol" aria-label="Default select example" id="classId" name="classId">
-                        <option value="">Select</option>
-                        <option *ngFor="let item of assignClassList" [value]="item.classId + ' ' + item.sectionId">{{item.classId + ' ' + item.sectionId}}</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-4">
                     <label for="inputState">Subject</label>
-                    <select class="form-control  myformcontrol" aria-label="Default select example" 
-                    id="examsubject" name="examsubject">
+                    <select class="form-control  myformcontrol" aria-label="Default select example" id="examsubject"
+                        name="examsubject">
                         <option value="">Select</option>
                         <option *ngFor="let item of uniqueSubjectArray" [value]="item">{{item}}</option>
                     </select>
                 </div>
-                
-            </div>
-            <div class="row">
-                <div class="col-md-10">
+                <div class="col-md-8">
                     <div class="row" style="padding-left: 10px;">
-                        <div class="form-group col-md-3 my-4" *ngFor="let item of examinationList; let i = index">
+                        <div class="form-group col-md-3 my-4 float-right" *ngFor="let item of examinationList; let i = index">
                             <div>
-                                <input type="checkbox" [name]="'item'+i"
-                                value="{{item.id}}" [checked]="item.selected" (change)="getExamList($event,item)"> {{item.examName}}
+                                <input type="checkbox" [name]="'item'+i" value="{{item.id}}" [checked]="item.selected"
+                                    (change)="getExamList($event,item)"> {{item.examName}}
                             </div>
-    
+        
                         </div>
                     </div>
                 </div>
@@ -122,50 +129,51 @@
                     <button type="button" class="btn btn-primary btn-round" (click)="viewStudentMarks()">
                         View</button>
                 </div>
-                
+        
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="inputState">Subject Enrichment</label>
                     <input class="form-control myformcontrol" type="text" placeholder="" id="subEn" name="subEn"
-                    (change)="subEnrichApply($event)">
+                        (change)="subEnrichApply($event)">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputState">Notebook</label>
                     <input class="form-control myformcontrol" type="text" placeholder="" id="note" name="note"
-                    (change)="notebookMarksApply($event)">
+                        (change)="notebookMarksApply($event)">
                 </div>
             </div>
             <form role="form" [formGroup]="addOtherMarksForm">
                 <div class="row">
                     <div class="col-md-12">
                         <div formArrayName="studentMarksArray">
-                            <div class="row" *ngFor="let item of addOtherMarksForm.get('studentMarksArray')['controls']; index as i"
+                            <div class="row"
+                                *ngFor="let item of addOtherMarksForm.get('studentMarksArray')['controls']; index as i"
                                 [formGroupName]="i">
                                 <div class="form-group col-sm-3">
                                     <label for="inputState">Admission No</label>
-                                    <input class="form-control myformcontrol" type="text" placeholder="" id="admissionNo" name="admissionNo"
-                                        formControlName="admissionNo">
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="admissionNo"
+                                        name="admissionNo" formControlName="admissionNo">
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label for="inputState">Student Name</label>
-                                    <input class="form-control myformcontrol" type="text" placeholder="" id="studentName" name="studentName"
-                                        formControlName="studentName">
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="studentName"
+                                        name="studentName" formControlName="studentName">
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label for="inputState">Pt Marks</label>
-                                    <input class="form-control myformcontrol" type="text" placeholder="" id="ptMarks" name="ptMarks"
-                                        formControlName="ptMarks">
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="ptMarks"
+                                        name="ptMarks" formControlName="ptMarks">
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label for="inputState">Subject Enrichment</label>
-                                    <input class="form-control myformcontrol" type="text" placeholder="" id="subEnrich" name="subEnrich"
-                                        formControlName="subEnrich">
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="subEnrich"
+                                        name="subEnrich" formControlName="subEnrich">
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label for="inputState">Notebook</label>
-                                    <input class="form-control myformcontrol" type="text" placeholder="" id="notebook" name="notebook"
-                                        formControlName="notebook">
+                                    <input class="form-control myformcontrol" type="text" placeholder="" id="notebook"
+                                        name="notebook" formControlName="notebook">
                                 </div>
                             </div>
                         </div>

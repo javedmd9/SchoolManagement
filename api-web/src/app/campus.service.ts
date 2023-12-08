@@ -364,7 +364,7 @@ export class CampusService {
   }
 
   getAssignSubjectCustomSearch(assignSubjectDto: AssignSubjectsTeacherDto) {
-    return this.http.post("http://localhost:9009/assign-subject/custom-assign-subject-teacher-search", assignSubjectDto);
+    return this.http.post("http://localhost:9009/assign-subject/filtered-subject-teacher", assignSubjectDto);
   }
 
   addStudentMarks(modelData: MarksDto) {
@@ -466,6 +466,16 @@ export class CampusService {
 
   public getStudentPercentAndGrade(dto: StudentMarkDto) {
     return this.http.post("http://localhost:9009/student-marks/student-grade", dto);
+  }
+
+  public getExamScheduleByClass(classId: string){
+    let url = `http://localhost:9009/exam-date-sheet/view-exam-date-sheet/${classId}`;
+    return this.http.get(url);
+  }
+
+  public getSubjectListByClass(classId: string){
+    let url = `http://localhost:9009/assign-subject/find-distinct-subjects-by-class/${classId}`;
+    return this.http.get(url);
   }
 
   // Permission authentication system codes

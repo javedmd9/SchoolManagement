@@ -2,6 +2,7 @@ package com.vivatechrnd.sms.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vivatechrnd.sms.Dto.ExamDateSheetDto;
+import com.vivatechrnd.sms.Dto.ExamScheduleDto;
 import com.vivatechrnd.sms.Dto.ExaminationDto;
 import com.vivatechrnd.sms.Dto.SubjectsDto;
 import com.vivatechrnd.sms.Entities.*;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -115,7 +116,7 @@ public class ExamDateSheetController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Response deleteExamAndStudentMarkList(@RequestBody ExamDateSheet examDateSheet){
         Response response = new Response();
-        ExamDateSheet dateSheet = examDateSheetRepository.findById(examDateSheet.getId()).get();
+        ExamDateSheet dateSheet = examDateSheetRepository.findById(examDateSheet.getId()).orElse(null);
         if (dateSheet != null){
             examDateSheetRepository.deleteById(dateSheet.getId());
             studentMarkRepository.deleteStudentRecord(dateSheet.getExamination().getClassId(), dateSheet.getSubjects().getId());
@@ -123,5 +124,45 @@ public class ExamDateSheetController {
             response.setMessage("Successfully delete subject from Date sheet");
         }
         return response;
+    }
+
+    @RequestMapping(value = "/view-exam-date-sheet/{classId}", method = RequestMethod.GET)
+    public ExamScheduleDto viewExamDateSheet(@PathVariable String classId){
+        Map<String, Map<String, String>> result = new LinkedHashMap<>();
+        Set<String> examNameSet = new LinkedHashSet<>();
+        List<Examination> examinationList = examinationRepository.findBySessionNameAndClassId(utilityService.getCurrentSession().getSessionName(), classId).stream().sorted(Comparator.comparing(Examination::getId)).collect(Collectors.toList());
+        List<String> sqlString = new ArrayList<>();
+        for (Examination examination : examinationList) {
+            String sql = "MAX(CASE when d.examination_id="+ examination.getId() +" then DATE_FORMAT(d.exam_date, '%Y-%m-%d') else null end) as '"+ examination.getExamName() +"'";
+            sqlString.add(sql);
+        }
+
+        String subQuery = String.join(",", sqlString);
+        String query = "select c.subject_code as 'Subject', " + subQuery +
+                " from school.exam_date_sheet d, school.examination e, school.class_subjects c\n" +
+                "where d.examination_id=e.id and c.id=d.subjects_id group by d.subjects_id";
+        List<Object[]> objectList = entityManager.createNativeQuery(query).getResultList();
+
+        for (Object[] row : objectList) {
+            String subjectCode = (String) row[0];
+
+            Map<String, String> subjectSchedule = new LinkedHashMap<>();
+            for (int i = 1; i < row.length; i++) {
+                String examDate = (String) row[i];
+                String examName = examinationList.get(i - 1).getExamName();
+                subjectSchedule.put(examName, examDate);
+                examNameSet.add(examName);
+            }
+            result.put(subjectCode, subjectSchedule);
+        }
+
+        ExamScheduleDto dto = new ExamScheduleDto();
+        List<String> examNameList = new ArrayList<>();
+        examNameList.addAll(examNameSet);
+        dto.setExamName(examNameList);
+        dto.setExamObject(objectList);
+
+        return dto;
+
     }
 }

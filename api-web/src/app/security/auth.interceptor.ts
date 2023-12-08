@@ -23,7 +23,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     headers: new HttpHeaders().set("Authorization", tokenStr)
                     
                 });
-                console.log("Sending request to backend: ", data);
+                // console.log("Sending request to backend: ", data);
                 return next.handle(modifiedRequest);
             }
         }))

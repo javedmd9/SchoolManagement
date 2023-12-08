@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { data } from 'jquery';
 import Swal from 'sweetalert2';
 import { CampusService } from '../campus.service';
-import { AssignSubjectsTeacherDto, SubjectDto, TeacherDto } from '../teachers/teacher.model';
+import { AssignSubjectsTeacherDto, SchoolSession, SubjectDto, TeacherDto } from '../teachers/teacher.model';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-assign-subject',
@@ -13,13 +14,14 @@ import { AssignSubjectsTeacherDto, SubjectDto, TeacherDto } from '../teachers/te
 })
 export class AssignSubjectComponent implements OnInit {
 
-  constructor(private service: CampusService, private router: Router) { }
+  constructor(private service: CampusService, private router: Router, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.initializeCreateForm();
     this.viewAllSubjects();
     this.viewAllTeachers();
     this.getAllAssignedSubject();
+    this.getAllSession();
   }
 
   assignClassSubjectForm: FormGroup;
@@ -31,6 +33,23 @@ export class AssignSubjectComponent implements OnInit {
       'subjectteacher': new FormControl('', Validators.required),
     });
     this.setDefaultValue();
+  }
+
+  filterSubjectTeacherForm: FormGroup;
+  initializeFilterSubjectTeacherForm(){
+    this.filterSubjectTeacherForm = new FormGroup({
+      'fsessionname': new FormControl('', Validators.required),
+      'fclassname': new FormControl('', Validators.required),
+      'fsubject': new FormControl('', Validators.required),
+      'fteacher': new FormControl('', Validators.required),
+    });
+    this.filterSubjectTeacherForm.patchValue({
+      fsesssion: "",
+      fclassname: "",
+      fsubject: "",
+      fteacher: ""
+    });
+    this.getAllDistinctClasses();
   }
 
   setDefaultValue(){
@@ -79,7 +98,17 @@ export class AssignSubjectComponent implements OnInit {
 
   assignedSubjectList: AssignSubjectsTeacherDto[];
   getAllAssignedSubject(){
-    let response = this.service.viewAllAssignedSubjectTeacher(0);
+    this.initializeFilterSubjectTeacherForm();
+    this.p = 1;
+    let dto: AssignSubjectsTeacherDto = {
+      sessionName: this.filterSubjectTeacherForm?.value?.fsessionname,
+      classId: null,
+      sectionId: null,
+      subjectId: null,
+      teacherId: null,
+      pageNumber: this.p
+    }
+    let response = this.service.getAssignSubjectCustomSearch(dto);
     response.subscribe((data:any) => {
       this.assignedSubjectList = data["content"];
       this.pages = data["totalElements"];
@@ -108,12 +137,23 @@ export class AssignSubjectComponent implements OnInit {
   }
 
   pages: number;
-  p: number = 0;
+  p: number = 1;
   itemPerPage: number;
   pageChangeEvent(event) {
     this.p = event;
     console.log("Page: ", this.p);
-    let response = this.service.viewAllAssignedSubjectTeacher(Number(event -1));
+    let classSection = this.filterSubjectTeacherForm?.value?.fclassname;
+    let classId = classSection?.split(" ")[0];
+    let sectionId = classSection?.split(" ")[1];
+    let dto: AssignSubjectsTeacherDto = {
+      sessionName: this.filterSubjectTeacherForm?.value?.fsessionname,
+      classId: classId,
+      sectionId: sectionId,
+      subjectId: this.filterSubjectTeacherForm?.value?.fsubject,
+      teacherId: this.filterSubjectTeacherForm?.value?.fteacher,
+      pageNumber: this.p
+    }
+    let response = this.service.getAssignSubjectCustomSearch(dto);
     response.subscribe((data:any) => {
       this.assignedSubjectList = data["content"];
       this.pages = data["totalElements"];
@@ -122,4 +162,91 @@ export class AssignSubjectComponent implements OnInit {
     });
   }
 
+  classList: AssignSubjectsTeacherDto[] = [];
+  getAllDistinctClasses(){
+    let response = this.service.viewAllDistinctClasses();
+    response.subscribe((data:any) => {
+      this.classList = data;
+      console.table(this.classList);
+    })
+  }
+
+  sessionList: SchoolSession[];
+  getAllSession(){
+    let response = this.service.viewAllSession();
+    response.subscribe((data:any) => {
+      this.sessionList = data;
+      console.log("Session List: ", this.sessionList);
+    });
+  }
+
+  closeResult: string;
+  openModel(createContenet: any) {
+
+    let modalName = createContenet._declarationTContainer.localNames[0];
+    console.log("Modal name: ", modalName);
+    if(modalName == ModalList.Filter_Modal){
+      this.initializeFilterSubjectTeacherForm();
+    }
+   
+    this.modalService.open(createContenet, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg', centered: true, animation: true
+    }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+  customSubjectList: AssignSubjectsTeacherDto[] = [];
+  displayAllSubject(event:any){
+    let classId = event.target.value.split(" ")[0];
+    let response = this.service.getSubjectListByClass(classId);
+    response.subscribe((data:any) => {
+      this.customSubjectList = data;
+      console.log("Custom subject list: ", this.customSubjectList);
+    });
+  }
+
+  getFilteredSubjectTeacher(){
+    let classSection = this.filterSubjectTeacherForm.value.fclassname;
+    let classId = classSection.split(" ")[0];
+    let sectionId = classSection.split(" ")[1];
+    let dto: AssignSubjectsTeacherDto = {
+      sessionName: this.filterSubjectTeacherForm.value.fsessionname,
+      classId: classId,
+      sectionId: sectionId,
+      subjectId: this.filterSubjectTeacherForm.value.fsubject,
+      teacherId: this.filterSubjectTeacherForm.value.fteacher,
+      pageNumber: 0
+    }
+
+    let response = this.service.getAssignSubjectCustomSearch(dto);
+    response.subscribe((data:any) => {
+      this.assignedSubjectList = data["content"];
+      this.pages = data["totalElements"];
+      this.p = data["number"] +1;
+      this.itemPerPage = data["numberOfElements"];
+      console.log(data);
+      console.log(this.assignedSubjectList);
+      this.modalService.dismissAll();
+    });
+  }
+
+}
+
+enum ModalList {
+  Filter_Modal = 'filterModal',
+  // Other enum values...
 }
