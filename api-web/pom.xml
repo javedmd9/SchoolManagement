@@ -3,18 +3,18 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.vivatech</groupId>
-    <artifactId>ums-web</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>com.vivatechrnd</groupId>
+    <artifactId>api-web</artifactId>
+    <version>1.0.0.33</version>
     <packaging>war</packaging>
 
-    <name>ums-web</name>
-    <description>UMS WEB</description>
+    <name>api-web</name>
+    <description>School WEB</description>
 
     <parent>
 		<groupId>com.vivatech</groupId>
 		<artifactId>common</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0.33</version>
 	<!-- lookup parent from repository -->
     </parent>
 

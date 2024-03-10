@@ -11,7 +11,7 @@
 	<groupId>com.vivatechrnd.sms</groupId>
 	<artifactId>sms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sms</name>
+	<name>api-sms</name>
 	<description>School Management System</description>
 	<properties>
 		<java.version>1.8</java.version>
