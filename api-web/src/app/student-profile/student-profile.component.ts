@@ -8,6 +8,7 @@ import { tap } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { CampusService } from '../campus.service';
 import { AssignSubjectsTeacherDto, ExamScheduleDto, ExaminationDto, LeaveRequestDto, ReportCardDto, StudentDocumentDto, StudentDto, StudentGradeDto, StudentMarkDto, TeacherDto, TimeTableReport } from '../teachers/teacher.model';
+import { baseURL } from '../constants';
 
 @Component({
   selector: 'app-student-profile',
@@ -21,6 +22,7 @@ export class StudentProfileComponent implements OnInit {
 
   admissionNo: string;
   userRole: string;
+  baseURL: string = baseURL.BASE_URL;
   ngOnInit(): void {
     this.routes.queryParams.subscribe((params:any) => {
       this.admissionNo = params.admissionNo;

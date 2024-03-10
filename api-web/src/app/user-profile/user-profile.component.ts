@@ -5,6 +5,7 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { CampusService } from '../campus.service';
 import { AssignSubjectsTeacherDto, CertificateDto, LeaveRequestDto, TeacherDto, TimeTableReport } from '../teachers/teacher.model';
+import { baseURL } from '../constants';
 
 @Component({
   selector: 'app-user-profile',
@@ -16,6 +17,7 @@ export class UserProfileComponent implements OnInit {
   constructor(private modalService: NgbModal, private teacherService: CampusService, private routes: ActivatedRoute) { }
 
   teachercode: number;
+  baseURL: string = baseURL.BASE_URL;
   ngOnInit() {
     // this.initializeEditFormData();
     let userData = JSON.parse(localStorage.getItem("UserData"));

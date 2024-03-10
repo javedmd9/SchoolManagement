@@ -43,7 +43,7 @@
                     <td>{{item.nameOfOrganization}}</td>
                     <td>{{item.organizationAddress}}</td>
                     <td>
-                      <a href="http://localhost:9009/certificates/{{item.certificatePath}}" target="_blank">
+                      <a [href]="baseURL + 'certificates/' + item.certificatePath" target="_blank">
                         {{item.certificateNo}}
                       </a>
                     </td>
@@ -166,7 +166,7 @@
           <div class="author">
             <a href="#">
               <img class="avatar border-gray" *ngIf="teacherData.teacherPhoto"
-                src="http://localhost:9009/images/{{teacherData.teacherPhoto}}" alt="{{teacherData.teacherPhoto}}">
+                [src]="baseURL + 'images/' + teacherData.teacherPhoto" alt="{{teacherData.teacherPhoto}}">
               <h5 class="title">{{teacherData.teacherName}}</h5>
             </a>
             <table class="abc">

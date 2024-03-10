@@ -470,7 +470,7 @@
                         style="opacity:0.5; color: red; margin-top: 35px; margin-left: 20px;" id="uteacherPhoto" class="form-control-file" 
                         name="uteacherPhoto" formControlName="uteacherPhoto"
                         (change) = "onFileSelected($event)"> -->
-                        <img src="http://localhost:9009/images/{{teacherPic}}" alt="teacher pic" style="margin-top: 20px; margin-left: 20px; height: 70%;">
+                        <img [src]="baseURL + 'images/' + teacherPic" alt="teacher pic" style="margin-top: 20px; margin-left: 20px; height: 70%;">
                         <button id="uteacherPhoto" (click)="openPhotoUploadForm(uploadImageModal)" class="btn btn-primary">Change</button>
                         <!-- <angular-file-uploader (fileSelected)="fileSelected($event)" [config]="afuConfig">
                         </angular-file-uploader> -->

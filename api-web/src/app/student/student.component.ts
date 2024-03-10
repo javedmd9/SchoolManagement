@@ -6,6 +6,7 @@ import readXlsxFile from 'read-excel-file';
 import Swal from 'sweetalert2';
 import { CampusService } from '../campus.service';
 import { StudentDocumentDto, StudentDto } from '../teachers/teacher.model';
+import { baseURL } from '../constants';
 
 @Component({
   selector: 'app-student',
@@ -21,6 +22,7 @@ export class StudentComponent implements OnInit {
   data: any;
   selectedFile: File;
   studentList: StudentDto[];
+  baseURL: string = baseURL.BASE_URL;
 
   ngOnInit(): void {
     this.initializeCreateForm();

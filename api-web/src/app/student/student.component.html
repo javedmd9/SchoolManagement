@@ -835,7 +835,7 @@
                             <tr *ngFor="let student of studentList | filter: data
                             | paginate: { itemsPerPage: itemPerPage, currentPage: p, totalItems: pages }">
                                 <td style="text-align: center; width: 20%;">
-                                    <img *ngIf="student.studentPhoto != null" src="http://localhost:9009/images/{{student.studentPhoto}}" alt="image">
+                                    <img *ngIf="student.studentPhoto != null" [src]="baseURL + 'images/' + student.studentPhoto" alt="image">
                                 </td>
                                 <td>{{student.admissionNo}}</td>
                                 <td>{{student.studentName}}</td>

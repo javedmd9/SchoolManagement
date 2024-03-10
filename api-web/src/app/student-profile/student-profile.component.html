@@ -24,7 +24,7 @@
                         <td style="width: 25%;text-align: center;">{{i + 1}}</td>
                         <td>{{item.edocumentname}}</td>
                         <td>
-                            <a href="http://localhost:9009/documents/{{item.estudentdocument}}" target="_blank">
+                            <a [href]="baseURL + 'documents/' + item.estudentdocument" target="_blank">
                                 {{item.estudentdocument}}
                             </a>
                         </td>
@@ -41,7 +41,7 @@
                   <tr *ngFor="let item of documents">
                     
                     <td>
-                      <a href="http://localhost:9009/documents/" target="_blank">
+                      <a [href]="baseURL + 'documents/'" target="_blank">
                         {{item.certificateNo}}
                       </a>
                     </td>
@@ -230,7 +230,7 @@
               <div class="author">
                 <a href="#">
                   <img class="avatar border-gray" *ngIf="studentData.studentPhoto"
-                    src="http://localhost:9009/images/{{studentData.studentPhoto}}" alt="{{studentData.studentPhoto}}">
+                    [src]="baseURL + 'images/' + studentData.studentPhoto" alt="{{studentData.studentPhoto}}">
                   <h5 class="title">{{studentData.studentName}}</h5>
                 </a>
                 <table class="abc">

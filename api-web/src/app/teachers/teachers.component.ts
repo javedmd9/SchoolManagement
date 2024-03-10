@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { CampusService } from '../campus.service';
 import { Roles } from '../security/authRequestDto.model';
 import { TeacherDto } from './teacher.model';
+import { baseURL } from '../constants';
 
 @Component({
   selector: 'app-teachers',
@@ -18,6 +19,7 @@ export class TeachersComponent implements OnInit {
   generateTeacherCode: number;
   closeResult: string;
   message: string;
+  baseURL: string = baseURL.BASE_URL;
 
   constructor(private modalService: NgbModal, private teacherService: CampusService, private router: Router) { }
 
