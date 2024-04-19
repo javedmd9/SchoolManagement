@@ -9,7 +9,7 @@
 
     <!-- Rolling File Appender -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/sms.log</file>
+        <file>/home/sdf/sms/logs/sms.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover and keep 7 days' worth of history -->
             <fileNamePattern>logs/sms.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
