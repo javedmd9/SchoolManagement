@@ -51,7 +51,7 @@ public class SmsApplication extends SpringBootServletInitializer {
 
 		Properties props = new Properties();
 
-		props.put("spring.config.location", "file:////home/core/sms/");
+		props.put("spring.config.location", "file:////home/sdf/sms/");
 
 		return props;
 
