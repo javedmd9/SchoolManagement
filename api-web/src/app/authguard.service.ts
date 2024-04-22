@@ -11,7 +11,7 @@ import { baseURL } from './constants';
 })
 export class AuthguardService {
 
-  baseURL: string = baseURL.BASE_URL;
+  base_URL: string = baseURL.BASE_URL;
 
   constructor(private http: HttpClient) {
     this.autoSignIn();
@@ -40,7 +40,7 @@ export class AuthguardService {
   roleId: number;
 
   public generateToken(request) {
-    return this.http.post<AuthRequestDto>(`${baseURL}admin/authentication`, request, { responseType: 'text' as 'json' }).pipe(
+    return this.http.post<AuthRequestDto>(`${this.base_URL}admin/authentication`, request, { responseType: 'text' as 'json' }).pipe(
       tap(((res: any) => {
         // console.log(`result`,res);
         this.authRequestDto = JSON.parse(res);
