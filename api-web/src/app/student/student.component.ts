@@ -731,9 +731,9 @@ export class StudentComponent implements OnInit {
   }
 
   public viewStudent(code: number){
-    let url = this.router.serializeUrl(this.router.createUrlTree(['/student-profile'], { queryParams: { admissionNo: code} }));
-    window.open(url, '_blank');
-    // this.router.navigate(['/student-profile'], { queryParams: { admissionNo: code} });
+    // let url = this.router.serializeUrl(this.router.createUrlTree(['/student-profile'], { queryParams: { admissionNo: code} }));
+    // window.open(url, '_blank');
+    this.router.navigate(['/student-profile'], { queryParams: { admissionNo: code} });
   }
 
   openBulkUploadDialog(openBulkModal:any){
