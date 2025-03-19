@@ -118,7 +118,7 @@
             <div class="card-header">
               <h5 class="title">Class Time Table</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body" *ngIf="timeTableReport?.timeTableObject?.length > 0">
               <table style="display: block; overflow-x: auto;">
                 <thead style="color: #7e6eeb;">
                     <th style="text-align: center;border: 1px solid #7e6eeb;">
@@ -168,7 +168,7 @@
             <div class="card-header">
               <h5 class="title">Exam Schedule</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body" *ngIf="examScheduleResult?.examName?.length > 0">
               <table class="table table-responsive">
                 <thead>
                   <tr id="custom-font-table">
@@ -196,7 +196,7 @@
             <div class="card-header">
               <h5 class="title">Examination Result</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body" *ngIf="studentReportCard.examinationDtoList?.length > 0">
               <table class="table table-responsive">
                 <thead>
                   <tr id="custom-font-table">

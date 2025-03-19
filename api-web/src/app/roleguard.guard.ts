@@ -42,6 +42,7 @@ export class RoleguardGuard implements CanActivate {
       userData = data;
       privilegeList = userData.privilegeList;
     });
+    if(userData?.roles?.name == "SUPER ADMIN") return true;
     const expectedPermission = route.data.expectedRoles;
     console.log("Expected Permissions: ", expectedPermission);
     privilegeList.forEach(ele => {

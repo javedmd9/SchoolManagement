@@ -28,7 +28,7 @@ export const ROUTES: RouteInfo[] = [
     { path: '/time-table', title: 'Time Table',  icon:'ui-1_calendar-60', class: '', permission: 'VIEW TIME TABLE' },
     // { path: '/student-profile', title: 'Student Profile',  icon:'users_circle-08', class: '' },
     { path: '/help', title: 'Help',  icon:'text_caps-small', class: '' },
-    { path: '/icons', title: 'Icons',  icon:'education_atom', class: '', permission: 'VIEW STUDENT MARKS' },
+    { path: '/icons', title: 'Icons',  icon:'education_atom', class: '', permission: '' },
     // { path: '/notifications', title: 'Notifications',  icon:'ui-1_bell-53', class: '' },
 
     // { path: '/create-campus', title: 'Create Campus',  icon:'users_single-02', class: '' },
@@ -55,7 +55,10 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
   menuItems: any[] = [];
   subscribeMenu: Subscription;
-  constructor(private service?: CampusService, private authService?: AuthguardService) { }
+  loggedInRole: string;
+  constructor(private service?: CampusService, private authService?: AuthguardService) { 
+    
+  }
 
   ngOnInit() {
     
@@ -63,6 +66,8 @@ export class SidebarComponent implements OnInit {
     this.subscribeMenu = validateLogin.subscribe(res => {
       console.log("Interval: ",res);
       if(this.authService.isLoggedIn){
+        let userData = JSON.parse(localStorage.getItem("UserData"));
+        this.loggedInRole = userData?.roles?.name
         this.writeSideBarMenu();
         this.subscribeMenu.unsubscribe()
       }
@@ -73,6 +78,7 @@ export class SidebarComponent implements OnInit {
   
   private writeSideBarMenu() {
     return this.menuItems = ROUTES.filter(menuItem => {
+      if (this.loggedInRole == 'SUPER ADMIN') return menuItem;
       if (this.service.permissionService([menuItem.permission]) == true) {
         // console.log("Menu items: ", menuItem);
         return menuItem;

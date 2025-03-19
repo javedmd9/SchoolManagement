@@ -77,7 +77,7 @@ export class CampusService {
   }
 
   public addTeacher(modelData: TeacherDto, file: any) {
-    let urlPath = '${this.baseUrl}teacher/add';
+    let urlPath = `${this.baseUrl}teacher/add`;
     const mData = JSON.stringify(modelData);
     console.log(`MDATA: ` + mData);
     const formData = new FormData();
@@ -254,7 +254,7 @@ export class CampusService {
   }
 
   public findUserByUsername(username: string) {
-    return this.http.post(`${this.baseUrl}admin/find-by-username`, username);
+    return this.http.get(`${this.baseUrl}admin/find-by-username?username=${username}`);
   }
 
   public saveAttendance(attendanceDto: AttendanceDto[]) {

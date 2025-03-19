@@ -3,6 +3,7 @@ package com.vivatechrnd.sms.Login;
 import com.vivatechrnd.sms.Dto.UserDto;
 import com.vivatechrnd.sms.Entities.*;
 import com.vivatechrnd.sms.Repository.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,8 +25,8 @@ public class LoginController {
 
     @Value("${token.expiry}")
     private Integer expiryTime;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
 
     @Autowired
     private CustomUserDetailsService service;
@@ -38,13 +39,18 @@ public class LoginController {
 
     @RequestMapping(value = "/authentication", method = RequestMethod.POST)
     public AuthRequestDto generateToken(@RequestBody AuthRequestDto authRequestDto) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequestDto.getUsername(), authRequestDto.getPassword())
-            );
-        } catch (Exception ex){
-            throw new Exception("Invalid username or password");
+//        authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(authRequestDto.getUsername(), authRequestDto.getPassword())
+//            );
+        if (StringUtils.isEmpty(authRequestDto.getUsername()) && StringUtils.isEmpty(authRequestDto.getPassword())) {
+            throw new SMSExceptionHandler("Please enter the credentials.");
         }
+        Users users = usersRepository.findByUserName(authRequestDto.getUsername());
+        if (users == null) throw new SMSExceptionHandler("Invalid credentials");
+        if (!users.getUserName().equals(authRequestDto.getUsername())) throw new SMSExceptionHandler("Invalid Credentials");
+        if (!users.getPassword().equals(authRequestDto.getPassword())) throw new SMSExceptionHandler("Invalid credentials");
+
+        authRequestDto.setUsername(users.getUserName());
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
 //        System.out.println("Expiry Time: "+ expiryTime);
@@ -74,8 +80,8 @@ public class LoginController {
     @Autowired
     private StudentRepository studentRepository;
 
-    @RequestMapping(value = "/find-by-username", method = RequestMethod.POST)
-    public UserDto findByUsername(@RequestBody String username){
+    @GetMapping("/find-by-username")
+    public UserDto findByUsername(@RequestParam String username){
         UserDto user = new UserDto();
         Users users = usersRepository.findByUserName(username);
         if (users.getRoles().getName().equals("TEACHER") || users.getRoles().getName().equals("ASSISTANT TEACHER")){

@@ -60,7 +60,7 @@ public class StudentService {
             Response uploadResponse = fileService.uploadImage3(formData.getUploadfile(), referenceNo);
             if (uploadResponse.getResult() != "SUCCESS"){
                 response.setResult("FAILED");
-                response.setError(uploadResponse.getError());
+                response.setMessage(uploadResponse.getError());
                 return response;
             }
             studentDto.setStudentPhoto(uploadResponse.getMessage());

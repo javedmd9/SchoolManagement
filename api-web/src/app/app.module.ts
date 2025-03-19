@@ -42,8 +42,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { LeaveRequestComponent } from './leave-request/leave-request.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { TimeTableComponent } from './time-table/time-table.component';
-import { NgxPrintModule } from 'ngx-print';
 import { NgxCaptureModule } from 'ngx-capture';
+import { ErrorInterceptor } from './security/error.interceptor';
 
 @NgModule({
   imports: [
@@ -58,7 +58,6 @@ import { NgxCaptureModule } from 'ngx-capture';
     NgxPaginationModule,
     Ng2SearchPipeModule,
     NgbModule,
-    NgxPrintModule,
     NgxCaptureModule,
     ToastrModule.forRoot(),
     NgMultiSelectDropDownModule.forRoot()
@@ -88,6 +87,7 @@ import { NgxCaptureModule } from 'ngx-capture';
   
   ],
   providers: [CampusService, AuthGuard, 
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

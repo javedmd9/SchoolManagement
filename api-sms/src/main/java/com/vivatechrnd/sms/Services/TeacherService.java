@@ -105,13 +105,15 @@ public class TeacherService {
       teacherDto = objectMapper.readValue(teacher.getIvrprompt(), TeacherDto.class);
       String referenceNo = teacherDto.getTeacherPhoto() == null? RandomStringUtils.randomNumeric(6): teacherDto.getTeacherPhoto();
 
-      Response uploadResponse = fileService.uploadImage3(teacher.getUploadfile(), referenceNo);
-      if (uploadResponse.getResult() != "SUCCESS"){
-        response.setResult("FAILED");
-        response.setError(uploadResponse.getError());
-        return response;
+      if (teacher.getUploadfile() != null) {
+        Response uploadResponse = fileService.uploadImage3(teacher.getUploadfile(), referenceNo);
+        if (uploadResponse.getResult() != "SUCCESS"){
+          response.setResult("FAILED");
+          response.setError(uploadResponse.getError());
+          return response;
+        }
+        teacherDto.setTeacherPhoto(uploadResponse.getMessage());
       }
-      teacherDto.setTeacherPhoto(uploadResponse.getMessage());
       Teacher teacherData = utilityService.convertTeacherDtoToEntity(teacherDto);
       Roles roles = rolesRepository.findById(teacherDto.getStaffRole()).get();
       teacherData.setRoles(roles);
@@ -227,6 +229,7 @@ public class TeacherService {
 
   public TeacherDto findTeacherByClassAndSection(TeacherDto teacherDto){
     Teacher teacher = teacherRepository.findByClassIdAndSectionId(teacherDto.getClassId(), teacherDto.getSectionId());
+    if (teacher == null) return new TeacherDto();
     return utilityService.convertTeacherEntityToDto(teacher);
   }
 

@@ -94,7 +94,7 @@ public class StudentMarkController {
         SchoolSessionDto currentSession = utilityService.getCurrentSession();
         markDto.setSessionName(currentSession.getSessionName());
         Page<StudentMarks> filteredMarks = getFilteredMarks(markDto, pageRequest);
-        if (filteredMarks.getContent().size() > 0){
+        if (!filteredMarks.getContent().isEmpty()){
             ReportCardDto reportCardDto = new ReportCardDto();
             List<Examination> examinationList = examinationRepository.findBySessionNameAndClassId(currentSession.getSessionName(), dto.getStudent().getClassId());
             List<ExaminationDto> examDtoList = new ArrayList<>();
@@ -105,7 +105,7 @@ public class StudentMarkController {
             reportCardDto.setReportObject(examSummary);
             return reportCardDto;
         }
-        return null;
+        return new ReportCardDto();
     }
 
     @Transactional

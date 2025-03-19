@@ -150,7 +150,7 @@ public class TimeTableController {
                 "Max(case when tt.period=6 then concat(s.subject_code, ' ', t.teacher_name) else null end) as '6',\n" +
                 "Max(case when tt.period=7 then concat(s.subject_code, ' ', t.teacher_name) else null end) as '7',\n" +
                 "Max(case when tt.period=8 then concat(s.subject_code, ' ', t.teacher_name) else null end) as '8'\n" +
-                "FROM school.time_table as tt, school.class_subjects as s, school.teacher as t\n" +
+                "FROM time_table as tt, class_subjects as s, teacher as t\n" +
                 "where tt.subjects_id=s.id and tt.teacher_id=t.id\n" +
                 "and tt.class_id="+classId+" and tt.section_id='"+sectionId+"' group by tt.day_name order by tt.section_id";
         List<Object[]> objectlist = entityManager.createNativeQuery(query).getResultList();

@@ -132,6 +132,7 @@ public class ExamDateSheetController {
         Set<String> examNameSet = new LinkedHashSet<>();
         List<Examination> examinationList = examinationRepository.findBySessionNameAndClassId(utilityService.getCurrentSession().getSessionName(), classId).stream().sorted(Comparator.comparing(Examination::getId)).collect(Collectors.toList());
         List<String> sqlString = new ArrayList<>();
+        if (examinationList.isEmpty()) return new ExamScheduleDto();
         for (Examination examination : examinationList) {
             String sql = "MAX(CASE when d.examination_id="+ examination.getId() +" then DATE_FORMAT(d.exam_date, '%Y-%m-%d') else null end) as '"+ examination.getExamName() +"'";
             sqlString.add(sql);

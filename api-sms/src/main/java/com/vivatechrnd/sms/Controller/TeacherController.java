@@ -36,7 +36,7 @@ public class TeacherController {
   }
 
   @RequestMapping(value = "/add", method = RequestMethod.POST)
-  public Response addTeacher(@RequestPart String teacher, @RequestPart MultipartFile file){
+  public Response addTeacher(@RequestPart String teacher, @RequestPart(required = false) MultipartFile file){
     FormDataWithUploadFile formData = new FormDataWithUploadFile();
     formData.setIvrprompt(teacher);
     formData.setUploadfile(file);

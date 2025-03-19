@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.text.DecimalFormat;
 
 @Service
@@ -76,6 +77,10 @@ public class UtilityService {
         double d = doubleValue;
         DecimalFormat df = new DecimalFormat("#.##");
         return Double.valueOf(df.format(d));
+    }
+
+    public static Date convertStringToDate(String date) {
+        return Date.valueOf(date);
     }
 
 //    public static <T> T convertDtoToEntity(Object object, Class<T> valueType) throws IOException {
